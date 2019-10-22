@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<!-- LISTING: 893786 --> 
+<html>
+    <head>    
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>Team 4</title>
+        <!--<script type="text/javascript" src="d3/d3.v2.js"></script>-->
+        <script src="http://d3js.org/d3.v2.js"></script>
+        <!-- the above script tag ^ makes use of the d3v2 javascript library -->
+        <!-- Note: I made good use of the sample code provided by the D3JS community and extended it to fit my needs to create this simple dashboard -->
+        <style type="text/css">
+
+
+            #pieChart {  
+                display:inline-block;
+                top:10px;
+                left:10px;
+                width:400px;
+                height: 400px; 
+                font-size: 12pt;
+                font-family: Verdana;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+
+
+
+            #lineChart {    
+                position:absolute;
+                top:10px;
+                left:410px;
+                height: 150px;
+            }
+
+            #barChart {
+                position:absolute;
+                top:160px;
+                left:410px;
+                height: 250px;
+            }
+
+            .slice {
+                font-size: 12pt;
+                font-family: Verdana;
+                fill: white; //svg specific - instead of color
+                font-weight: bold;	
+            } 
+
+            /*for line chart*/
+            .axis path, .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges; //The shape-rendering property is an SVG attribute, used here to make sure our axis and its tick mark lines are pixel-perfect. 
+            }
+
+            .line {
+                fill: none;
+                /*stroke: steelblue;*/
+                stroke-width: 3px;
+            }
+
+            .dot {
+                /*fill: white;*/
+                /*stroke: steelblue;*/
+                stroke-width: 1.5px;
+            }
+
+
+            .axis text {
+                font-family: Verdana;
+                font-size: 11px;
+            }
+
+            .title {
+                font-family: Verdana;
+                font-size: 15px;	
+
+            }
+
+            .xAxis {
+                font-family: verdana;
+                font-size: 11px;
+                fill: black;
+            }  
+
+            .yAxis {
+                font-family: verdana;
+                font-size: 11px;
+                fill: white;
+            }
+
+
+            table {
+                border-collapse:collapse;
+                border: 0px;	
+                font-family: Verdana;	
+                color: #5C5558;
+                font-size: 12px;
+                text-align: right;			
+            }
+
+            td {
+                padding-left: 10px;		
+            }
+
+            #lineChartTitle1 {
+                font-family: Verdana;
+                font-size  : 14px;
+                fill       : lightgrey;
+                font-weight: bold;
+                text-anchor: middle;
+            }
+
+            #lineChartTitle2 {
+                font-family: Verdana;
+                font-size  : 72px;
+                fill       : grey;
+                text-anchor: middle;
+                font-weight: bold;
+                /*font-style: italic;*/
+            }
+            
+            .diagrams {
+                padding: 150px;
+                text-align: center;
+                align-content: center;
+            }
+            
+            #pageTitle {
+                font-family: Lucida Sans Unicode;
+                font-size  : 40px;
+                fill       : grey;
+                text-anchor: middle;
+                font-weight: bold;
+            }
+            
+            #label2 {
+                font-family: Lucida Sans Unicode;
+                font-size  : 25px;
+                text-anchor: middle;
+                font-weight: bold;
+            }
+            
+            #label {
+                font-family: Lucida Sans Unicode;
+                font-size  : 25px;
+                text-anchor: middle;
+                font-weight: bold;
+            }
+            
+            .slideraxis {
+                fill: black;
+                stroke: black;
+                stroke-width: 0.4;
+                opacity: 1;
+            }
+            
+            .xaxis .tick.major {
+                fill: black;
+                stroke: black;
+                stroke-width: 0.1;
+                opacity: 0.7;
+            }
+            
+            text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+            
+            path.domain {    
+                fill: none;
+                stroke: none;
+            }
+            
+            /*
+            #clusterChart {
+                fill: none;
+                stroke: none;
+            }
+
+            */
+
+            
+            nav {
+                text-align: center;
+            }
+            
+            nav a {
+                font-family: Verdana;
+                font-size  : 20px;
+                fill       : lightgrey;
+            }
+            
+            .axis path,
+            .axis line {
+              fill: none;
+              stroke: #000;
+              stroke-width: 1.5px;
+              shape-rendering: crispEdges;
+            }
+
+            .line {
+              fill: none;
+              stroke: steelblue;
+              stroke-width: 3.5px;
+            }
+
+            .dot {
+              stroke: #000;
+            }
+
+            div.tooltip {   
+              position: absolute;           
+              text-align: center;           
+              width: 80px;                  
+              height: 55px;                 
+              padding: 4px;             
+              font: 16px sans-serif;  
+              color: white;   
+              font-weight: 500;   
+              background: black;   
+              border: 0px;      
+              border-radius: 4px;           
+              pointer-events: none;         
+            }
+
+            /* http://www.d3noob.org/2013/01/adding-grid-lines-to-d3js-graph.html */
+            .grid .tick {
+                stroke: lightgrey;
+                opacity: 0.7;
+            }
+
+        </style>
+        
+        <div id="pageTitle">
+            <h1 style="position:sticky; align: center; margin:auto; margin-bottom: 30px; text-align: center;"> Los Angeles Airbnb </h1>
+        </div>
+    
+        <nav>
+            <a href="index4.html">Home</a> |
+            <a href="index.html">Overview</a> |
+            <a href="index1.html">Listing 1</a> |
+            <a href="index2.html">Listing 2</a> |
+            <a href="index3.html">Listing 3</a>
+        </nav>
+        
+    </head>
+    <body>
+
+        <div style="border-top-style: solid;padding:0;margin-top:10%; text-align: center;" class="diagrams" id="sentiment">
+            <div id="label">
+                <h3 style="color:grey;">Sentiment Analysis</h3>
+            </div>
+            <!-- display:inline-block;  -->
+            <div style="margin-left: auto; margin-right: auto;">
+                <svg width="960" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg"><g></g><g transform="translate(480,300)"><text text-anchor="middle" transform="translate(276,132)rotate(59.99999999999999)" style="font-size: 59px; font-family: Impact; fill: rgb(181, 207, 107);">area</text><text text-anchor="middle" transform="translate(-147,-191)rotate(-29.999999999999993)" style="font-size: 59px; font-family: Impact; fill: rgb(123, 65, 115);">time</text><text text-anchor="middle" transform="translate(22,91)rotate(-29.999999999999993)" style="font-size: 78px; font-family: Impact; fill: rgb(206, 219, 156);">place</text><text text-anchor="middle" transform="translate(124,96)rotate(0)" style="font-size: 52px; font-family: Impact; fill: rgb(165, 81, 148);">one</text><text text-anchor="middle" transform="translate(320,109)rotate(59.99999999999999)" style="font-size: 69px; font-family: Impact; fill: rgb(123, 65, 115);">everything</text><text text-anchor="middle" transform="translate(51,66)rotate(0)" style="font-size: 100px; font-family: Impact; fill: rgb(82, 84, 163);"></text><text text-anchor="middle" transform="translate(-169,-18)rotate(29.999999999999993)" style="font-size: 75px; font-family: Impact; fill: rgb(99, 121, 57);">stay</text><text text-anchor="middle" transform="translate(-195,92)rotate(-59.99999999999999)" style="font-size: 79px; font-family: Impact; fill: rgb(140, 162, 82);">great</text><text text-anchor="middle" transform="translate(58,-33)rotate(29.999999999999993)" style="font-size: 70px; font-family: Impact; fill: rgb(181, 207, 107);">venice</text><text text-anchor="middle" transform="translate(-335,-41)rotate(59.99999999999999)" style="font-size: 73px; font-family: Impact; fill: rgb(140, 109, 49);">location</text><text text-anchor="middle" transform="translate(227,-10)rotate(-59.99999999999999)" style="font-size: 74px; font-family: Impact; fill: rgb(189, 158, 57);">beach</text><text text-anchor="middle" transform="translate(103,172)rotate(29.999999999999993)" style="font-size: 66px; font-family: Impact; fill: rgb(231, 186, 82);">perfect</text><text text-anchor="middle" transform="translate(155,-148)rotate(-29.999999999999993)" style="font-size: 65px; font-family: Impact; fill: rgb(173, 73, 74);">house</text><text text-anchor="middle" transform="translate(4,-149)rotate(59.99999999999999)" style="font-size: 62px; font-family: Impact; fill: rgb(165, 81, 148);">nice</text><text text-anchor="middle" transform="translate(230,96)rotate(-59.99999999999999)" style="font-size: 67px; font-family: Impact; fill: rgb(206, 109, 189);">clean</text><text text-anchor="middle" transform="translate(-138,86)rotate(-59.99999999999999)" style="font-size: 50px; font-family: Impact; fill: rgb(57, 59, 121);">la</text><text text-anchor="middle" transform="translate(-258,224)" style="font-size: 58px; font-family: Impact; fill: rgb(82, 84, 163);">walk</text><text text-anchor="middle" transform="translate(292,223)" style="font-size: 60px; font-family: Impact; fill: rgb(107, 110, 207);">home</text><text text-anchor="middle" transform="translate(-137,146)rotate(0)" style="font-size: 62px; font-family: Impact; fill: rgb(99, 121, 57);">well</text><text text-anchor="middle" transform="translate(381,-59)rotate(59.99999999999999)" style="font-size: 54px; font-family: Impact; fill: rgb(140, 162, 82);">loved</text><text text-anchor="middle" transform="translate(-254,-222)rotate(0)" style="font-size: 57px; font-family: Impact; fill: rgb(181, 207, 107);">just</text><text text-anchor="middle" transform="translate(-323,180)rotate(-59.99999999999999)" style="font-size: 59px; font-family: Impact; fill: rgb(206, 219, 156);">back</text><text text-anchor="middle" transform="translate(-235,-270)rotate(0)" style="font-size: 36px; font-family: Impact; fill: rgb(189, 158, 57);">bed</text><text text-anchor="middle" transform="translate(-390,160)rotate(-29.999999999999993)" style="font-size: 52px; font-family: Impact; fill: rgb(231, 186, 82);">like</text><text text-anchor="middle" transform="translate(-334,109)" style="font-size: 60px; font-family: Impact; fill: rgb(231, 203, 148);">easy</text><text text-anchor="middle" transform="translate(403,-134)rotate(29.999999999999993)" style="font-size: 45px; font-family: Impact; fill: rgb(132, 60, 57);">get</text><text text-anchor="middle" transform="translate(294,-63)rotate(-59.99999999999999)" style="font-size: 38px; font-family: Impact; fill: rgb(123, 65, 115);">go</text><text text-anchor="middle" transform="translate(111,-74)" style="font-size: 49px; font-family: Impact; fill: rgb(165, 81, 148);">s</text><text text-anchor="middle" transform="translate(246,165)rotate(29.999999999999993)" style="font-size: 47px; font-family: Impact; fill: rgb(82, 84, 163);">two</text><text text-anchor="middle" transform="translate(156,243)rotate(29.999999999999993)" style="font-size: 44px; font-family: Impact; fill: rgb(156, 158, 222);">ca</text><text text-anchor="middle" transform="translate(-410,-153)rotate(-29.999999999999993)" style="font-size: 43px; font-family: Impact; fill: rgb(99, 121, 57);">etc</text><text text-anchor="middle" transform="translate(-424,-107)rotate(0)" style="font-size: 36px; font-family: Impact; fill: rgb(181, 207, 107);">fun</text><text text-anchor="middle" transform="translate(-153,-82)rotate(59.99999999999999)" style="font-size: 40px; font-family: Impact; fill: rgb(189, 158, 57);">lot</text><text text-anchor="middle" transform="translate(250,-265)rotate(29.999999999999993)" style="font-size: 38px; font-family: Impact; fill: rgb(231, 186, 82);">air</text><text text-anchor="middle" transform="translate(-41,35)rotate(-30)" style="font-size: 82px; font-family: Impact; fill: rgb(231, 203, 148);">kevin</text><text text-anchor="middle" transform="translate(189,-84)rotate(-60)" style="font-size: 66px; font-family: Impact; fill: rgb(132, 60, 57);">host</text><text text-anchor="middle" transform="translate(-30,231)rotate(0)" style="font-size: 63px; font-family: Impact; fill: rgb(173, 73, 74);">comfortable</text><text text-anchor="middle" transform="translate(-122,-102)rotate(60)" style="font-size: 62px; font-family: Impact; fill: rgb(214, 97, 107);">kinney</text><text text-anchor="middle" transform="translate(255,-197)rotate(30)" style="font-size: 61px; font-family: Impact; fill: rgb(231, 150, 156);">definitely</text><text text-anchor="middle" transform="translate(331,-37)rotate(60)" style="font-size: 61px; font-family: Impact; fill: rgb(123, 65, 115);">really</text><text text-anchor="middle" transform="translate(-286,-155)rotate(30)" style="font-size: 61px; font-family: Impact; fill: rgb(165, 81, 148);">apartment</text><text text-anchor="middle" transform="translate(-27,-201)rotate(-60)" style="font-size: 59px; font-family: Impact; fill: rgb(206, 109, 189);">abbot</text><text text-anchor="middle" transform="translate(89,-214)rotate(0)" style="font-size: 59px; font-family: Impact; fill: rgb(222, 158, 214);">close</text><text text-anchor="middle" transform="translate(-373,15)rotate(-60)" style="font-size: 58px; font-family: Impact; fill: rgb(57, 59, 121);">bikes</text><text text-anchor="middle" transform="translate(-281,-75)rotate(60)" style="font-size: 57px; font-family: Impact; fill: rgb(82, 84, 163);">also</text><text text-anchor="middle" transform="translate(348,-212)rotate(30)" style="font-size: 56px; font-family: Impact; fill: rgb(107, 110, 207);">space</text><text text-anchor="middle" transform="translate(-127,-252)rotate(0)" style="font-size: 56px; font-family: Impact; fill: rgb(156, 158, 222);">patio</text><text text-anchor="middle" transform="translate(76,-265)rotate(0)" style="font-size: 50px; font-family: Impact; fill: rgb(99, 121, 57);">come</text><text text-anchor="middle" transform="translate(-13,177)rotate(0)" style="font-size: 49px; font-family: Impact; fill: rgb(206, 109, 189);">even</text><text text-anchor="middle" transform="translate(254,-130)rotate(30)" style="font-size: 48px; font-family: Impact; fill: rgb(140, 162, 82);">away</text><text text-anchor="middle" transform="translate(-398,-49)rotate(-60)" style="font-size: 48px; font-family: Impact; fill: rgb(181, 207, 107);">spot</text><text text-anchor="middle" transform="translate(-331,47)rotate(-30)" style="font-size: 47px; font-family: Impact; fill: rgb(123, 65, 115);">use</text><text text-anchor="middle" transform="translate(400,65)rotate(60)" style="font-size: 47px; font-family: Impact; fill: rgb(206, 219, 156);">first</text><text text-anchor="middle" transform="translate(389,-240)rotate(30)" style="font-size: 46px; font-family: Impact; fill: rgb(140, 109, 49);">want</text><text text-anchor="middle" transform="translate(-21,-109)rotate(-60)" style="font-size: 46px; font-family: Impact; fill: rgb(189, 158, 57);">unit</text><text text-anchor="middle" transform="translate(-388,-262)rotate(0)" style="font-size: 45px; font-family: Impact; fill: rgb(231, 186, 82);">quick</text><text text-anchor="middle" transform="translate(-148,181)rotate(0)" style="font-size: 44px; font-family: Impact; fill: rgb(165, 81, 148);">many</text><text text-anchor="middle" transform="translate(-429,117)rotate(0)" style="font-size: 42px; font-family: Impact; fill: rgb(231, 203, 148);">left</text><text text-anchor="middle" transform="translate(-413,235)rotate(60)" style="font-size: 41px; font-family: Impact; fill: rgb(132, 60, 57);">got</text><text text-anchor="middle" transform="translate(331,258)rotate(0)" style="font-size: 41px; font-family: Impact; fill: rgb(173, 73, 74);">used</text><text text-anchor="middle" transform="translate(-254,260)rotate(0)" style="font-size: 41px; font-family: Impact; fill: rgb(214, 97, 107);">living</text><text text-anchor="middle" transform="translate(85,-179)rotate(0)" style="font-size: 40px; font-family: Impact; fill: rgb(231, 150, 156);">grill</text><text text-anchor="middle" transform="translate(246,262)rotate(0)" style="font-size: 39px; font-family: Impact; fill: rgb(123, 65, 115);">bbq</text><text text-anchor="middle" transform="translate(-246,8)rotate(60)" style="font-size: 38px; font-family: Impact; fill: rgb(165, 81, 148);">tv</text><text text-anchor="middle" transform="translate(0,264)rotate(0)" style="font-size: 37px; font-family: Impact; fill: rgb(206, 109, 189);">blvd</text><text text-anchor="middle" transform="translate(94,264)rotate(0)" style="font-size: 37px; font-family: Impact; fill: rgb(222, 158, 214);">touch</text><text text-anchor="middle" transform="translate(-112,264)rotate(0)" style="font-size: 37px; font-family: Impact; fill: rgb(57, 59, 121);">liked</text></g></svg>
+            </div>
+            
+            <div class="diagrams" id="pieChart">
+                <script type="text/javascript">
+                    
+                    var 	formatAsPercentage = d3.format("%"),
+                                    formatAsPercentage1Dec = d3.format(".1%"),
+                                    formatAsInteger = d3.format(","),
+                                    fsec = d3.time.format("%S s"),
+                                    fmin = d3.time.format("%M m"),
+                                    fhou = d3.time.format("%H h"),
+                                    fwee = d3.time.format("%a"),
+                                    fdat = d3.time.format("%d d"),
+                                    fmon = d3.time.format("%b")
+                                    ;    
+    
+                    function dsPieChart() {
+
+                        var dataset = [
+                            {category: "Positive", measure: 0.97},
+                            {category: "Negative", measure: 0.01},
+                            {category: "Neutral", measure: 0.02}
+                        ]
+                                ;
+
+                        var width = 400,
+                                height = 400,
+                                outerRadius = Math.min(width, height) / 2,
+                                innerRadius = outerRadius * .999,
+                                // for animation
+                                innerRadiusFinal = outerRadius * .5,
+                                innerRadiusFinal3 = outerRadius * .45,
+                                color = d3.scale.category20()    //builtin range of colors
+                                ;
+
+                        var vis = d3.select("#pieChart")
+                                .append("svg:svg")              //create the SVG element inside the <body>
+                                .data([dataset])                   //associate our data with the document
+                                .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+                                .attr("height", height)
+                                .append("svg:g")                //make a group to hold our pie chart
+                                .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+                                ;
+
+                        var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+                                .outerRadius(outerRadius).innerRadius(innerRadius);
+
+                        // for animation
+                        var arcFinal = d3.svg.arc().innerRadius(innerRadiusFinal).outerRadius(outerRadius);
+                        var arcFinal3 = d3.svg.arc().innerRadius(innerRadiusFinal3).outerRadius(outerRadius);
+
+                        var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+                                .value(function (d) {
+                                    return d.measure;
+                                });    //we must tell it out to access the value of each element in our data array
+
+                        var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+                                .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+                                .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+                                .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+                                .attr("class", "slice")    //allow us to style things in the slices (like text)
+                                .on("mouseover", mouseover)
+                                .on("mouseout", mouseout)
+                                .on("click", up)
+                                ;
+
+                        arcs.append("svg:path")
+                                .attr("fill", function (d, i) {
+                                    return color(i);
+                                }) //set the color for each slice to be chosen from the color function defined above
+                                .attr("d", arc)     //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+                                .append("svg:title") //mouseover title showing the figures
+                                .text(function (d) {
+                                    return d.data.category + ": " + formatAsPercentage(d.data.measure);
+                                });
+
+                        d3.selectAll("g.slice").selectAll("path").transition()
+                                .duration(750)
+                                .delay(10)
+                                .attr("d", arcFinal)
+                                ;
+
+                        // Add a label to the larger arcs, translated to the arc centroid and rotated.
+                        // source: http://bl.ocks.org/1305337#index.html
+                        arcs.filter(function (d) {
+                            return d.endAngle - d.startAngle > .2;
+                        })
+                                .append("svg:text")
+                                .attr("dy", ".35em")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", function (d) {
+                                    return "translate(" + arcFinal.centroid(d) + ")rotate(" + angle(d) + ")";
+                                })
+                                //.text(function(d) { return formatAsPercentage(d.value); })
+                                .text(function (d) {
+                                    return d.data.category;
+                                })
+                                ;
+
+                        // Computes the label angle of an arc, converting from radians to degrees.
+                        function angle(d) {
+                            var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+                            return a > 90 ? a - 180 : a;
+                        }
+
+
+                        // Pie chart title			
+                        vis.append("svg:text")
+                                .attr("dy", ".35em")
+                                .attr("text-anchor", "middle")
+                                .text("Overall Sentiments")
+                                .attr("class", "title")
+                                ;
+
+
+
+                        function mouseover() {
+                            d3.select(this).select("path").transition()
+                                    .duration(750)
+                                    //.attr("stroke","red")
+                                    //.attr("stroke-width", 1.5)
+                                    .attr("d", arcFinal3)
+                                    ;
+                        }
+
+                        function mouseout() {
+                            d3.select(this).select("path").transition()
+                                    .duration(750)
+                                    //.attr("stroke","blue")
+                                    //.attr("stroke-width", 1.5)
+                                    .attr("d", arcFinal)
+                                    ;
+                        }
+
+                        function up(d, i) {
+
+                            /* update bar chart when user selects piece of the pie chart */
+                            //updateBarChart(dataset[i].category);
+                            updateBarChart(d.data.category, color(i));
+                            updateLineChart(d.data.category, color(i));
+
+                        }
+                    }
+                    dsPieChart();
+                </script>
+            </div>
+            
+            <div style="padding:0 auto; margin:0 auto;" class="diagrams" id="lineGraph">
+                <link rel="stylesheet" type="text/css" href="linegraph.css"></link>
+                <script src="http://d3js.org/d3.v3.js"></script>
+                <script>
+
+                    //I increased the bottom margin a little bit because the x label is tied to it; so I could lower the x label a little bit
+                    var margin = {top: 50, right: 20, bottom: 60, left: 100},
+                        width = 1200,
+                        height = 500;
+
+                        //width = 600 - margin.left - margin.right,
+                        //height = 400 - margin.top - margin.bottom;
+
+                    var x = d3.time.scale()
+                        .range([0, width]);
+
+                    var y = d3.scale.linear()
+                        .range([height, 0]);
+
+                    var xAxis = d3.svg.axis()
+                        .scale(x)
+                            .ticks(d3.time.months,6)
+                            //makes the xAxis ticks a little longer than the xMinorAxis ticks
+                        .tickSize(10)
+                        .orient("bottom");
+
+                    var xMinorAxis = d3.svg.axis()
+                        .scale(x)
+                            .ticks(d3.time.months,6)
+                        .orient("bottom");
+
+                    var yAxis = d3.svg.axis()
+                        .scale(y)
+                        .orient("left");
+
+                    var line = d3.svg.line()
+                        .x(function(d) { return x(d.date); })
+                        .y(function(d) { return y(d.total_km); });
+
+                    var div = d3.select("body").append("div")   
+                        .attr("class", "tooltip")               
+                        .style("opacity", 0);
+
+                    var svg = d3.select("body").append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    //The format in the CSV, which d3 will read
+                    //var parseDate = d3.time.format("%Y-%B");
+                    var parseDate = d3.time.format("%Y-%m-%d %X");
+
+                    //format for tooltip
+                    //https://github.com/mbostock/d3/wiki/Time-Formatting
+                    //var formatTime = d3.time.format("%e %b");
+                    var formatTime = d3.time.format("%e %b %-I:%M %p");
+                    var formatCount = d3.format(",");
+
+                    // function for the y grid lines
+                    function make_y_axis() {
+                      return d3.svg.axis()
+                          .scale(y)
+                          .orient("left")
+                          //.ticks(5)
+                    }
+
+                    //reading in CSV which contains data
+                    d3.csv("roads3b_built.csv", function(error, data) {
+                      data.forEach(function(d) {
+                        //console.log(d.date_time)
+                        d.date = parseDate.parse(d.date_time);
+                            console.log(d.date);
+                        d.total_km = +d.total_km;
+                        console.log(d.total_km);
+                      });
+
+                      //using imported data to define extent of x and y domains
+                      x.domain(d3.extent(data, function(d) { return d.date; }));
+                      y.domain(d3.extent(data, function(d) { return d.total_km; }));
+
+                    // Draw the y Grid lines
+                            svg.append("g")            
+                                    .attr("class", "grid")
+                                    .call(make_y_axis()
+                                            .tickSize(-width, 0, 0)
+                                            .tickFormat("")
+                                    )
+
+                      svg.append("path")
+                          .datum(data)
+                          .attr("class", "line")
+                          .attr("d", line);
+
+                    //taken from http://bl.ocks.org/mbostock/3887118
+                    //and http://www.d3noob.org/2013/01/change-line-chart-into-scatter-plot.html
+                    //creating a group(g) and will append a circle and 2 lines inside each group
+                    var g = svg.selectAll()
+                            .data(data).enter().append("g");
+
+                       //The markers on the line
+                             g.append("circle")
+                             //circle radius is increased
+                            .attr("r", 4.5)
+                            .attr("cx", function(d) { return x(d.date); })
+                            .attr("cy", function(d) { return y(d.total_km); });
+
+                       //The horizontal dashed line that appears when a circle marker is moused over
+                             g.append("line")
+                            .attr("class", "x")
+                            .attr("id", "dashedLine")
+                            .style("stroke", "steelblue")
+                            .style("stroke-dasharray", "3,3")
+                            .style("opacity", 0)
+                            .attr("x1", function(d) { return x(d.date); })
+                            .attr("y1", function(d) { return y(d.total_km); })
+                                        //d3.min gets the min date from the date x-axis scale
+                                        .attr("x2", function(d) { return x(d3.min(x)); })
+                            .attr("y2", function(d) { return y(d.total_km); });
+
+                      //The vertical dashed line that appears when a circle marker is moused over
+                            g.append("line")
+                            .attr("class", "y")
+                            .attr("id", "dashedLine")
+                            .style("stroke", "steelblue")
+                            .style("stroke-dasharray", "3,3")
+                            .style("opacity", 0)
+                            .attr("x1", function(d) { return x(d.date); })
+                            .attr("y1", function(d) { return y(d.total_km); })
+                                        .attr("x2", function(d) { return x(d.date); })
+                            .attr("y2", height);
+
+                       //circles are selected again to add the mouseover functions
+                             g.selectAll("circle")
+                                            .on("mouseover", function(d) {		
+                                div.transition()		
+                                   .duration(200)		
+                                   .style("opacity", .9);	
+                                div.html(formatCount(d.total_km) + "<br/>" + formatTime(d.date))	
+                                   .style("left", (d3.event.pageX - 20) + "px")
+                                         .style("top", (d3.event.pageY + 6) + "px");
+                                      //selects the horizontal dashed line in the group
+                                                  d3.select(this.nextElementSibling).transition()		
+                                    .duration(200)		
+                                    .style("opacity", .9);
+                                //selects the vertical dashed line in the group
+                                                  d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                                    .duration(200)		
+                                    .style("opacity", .9);	
+                                })	
+
+                          .on("mouseout", function(d) {		
+                                div.transition()		
+                                   .duration(500)		
+                                   .style("opacity", 0);
+
+                                                  d3.select(this.nextElementSibling).transition()		
+                                    .duration(500)		
+                                    .style("opacity", 0);
+
+                                                  d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                                    .duration(500)		
+                                    .style("opacity", 0);	
+                            });
+
+                    svg.append("g")
+                          .attr("class", "x axis")
+                          .attr("transform", "translate(0," + height + ")")
+                          .call(xAxis)
+                                .selectAll(".tick text")
+                          .call(wrap, 35);
+
+                    svg.append("g")
+                        .attr("class","xMinorAxis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .style({ 'stroke': 'Black', 'fill': 'none', 'stroke-width': '1px'})
+                        .call(xMinorAxis)
+                        .selectAll("text").remove();
+
+                    //http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html
+                    svg.append("text")      // text label for the x-axis
+                            .attr("x", width / 2 )
+                            .attr("y",  height + margin.bottom)
+                            .style("text-anchor", "middle")
+                            .text("Date");
+
+                    svg.append("text")      // text label for the y-axis
+                            .attr("y",30 - margin.left)
+                            .attr("x",50 - (height / 2))
+                            .attr("transform", "rotate(-90)")
+                            .style("text-anchor", "end")
+                            .style("font-size", "16px")
+                            .text("ratings");
+
+                    //http://www.d3noob.org/2013/01/adding-title-to-your-d3js-graph.html
+                    svg.append("text")      // text label for chart Title
+                            .attr("x", width / 2 )
+                            .attr("y", 0 - (margin.top/2))
+                            .style("text-anchor", "middle")
+                                    .style("font-size", "16px") 
+                            .style("text-decoration", "underline") 
+                            .text("Ratings of this listing over the years");
+
+
+                    svg.append("g")
+                          .attr("class", "y axis")
+                          .call(yAxis)
+                        //text label for the y-axis inside chart
+                        /*
+                        .append("text")
+                          .attr("transform", "rotate(-90)")
+                          .attr("y", 6)
+                          .attr("dy", ".71em")
+                          .style("text-anchor", "end")
+                          .style("font-size", "16px") 
+                          .style("background-color","red")
+                          .text("road length (km)");
+                        */
+
+                    //http://bl.ocks.org/mbostock/7555321
+                    //This code wraps label text if it has too much text
+                    function wrap(text, width) {
+                      text.each(function() {
+                        var text = d3.select(this),
+                            words = text.text().split(/\s+/).reverse(),
+                            word,
+                            line = [],
+                            lineNumber = 0,
+                            lineHeight = 1.1, // ems
+                            y = text.attr("y"),
+                            dy = parseFloat(text.attr("dy")),
+                            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+                        while (word = words.pop()) {
+                          line.push(word);
+                          tspan.text(line.join(" "));
+                          if (tspan.node().getComputedTextLength() > width) {
+                            line.pop();
+                            tspan.text(line.join(" "));
+                            line = [word];
+                            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                          }
+                        }
+                      });
+                    }
+
+                    });
+
+                </script>
+                
+            </div>
+            
+        </div>
+        
+        <div style="border-top-style: solid;padding:0; margin-top:10%; text-align: center;" class="diagrams" id="clustering">
+            <div id="label2">
+                <h3 style="color:grey; text-align: center;">Cluster Analysis</h3>
+            </div>
+            
+            <div style="padding:0; margin:0 auto;" class="diagrams" id="clusterChart">
+                
+                <!--<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.css">
+                -->
+
+               <div style="padding:0; margin:0 auto;" id="ldavis_el40581122081387928921006624"></div>
+                <script type="text/javascript">
+
+                    var ldavis_el40581122081387928921006624_data = {"mdsDat": {"x": [-0.16009547670590968, -0.1550859017735924, -0.0013169513173826527, 0.13273532418819234, 0.18376300560869238], "y": [0.014589468629773897, 0.028119265318811815, -0.03795535624260149, -0.14737332684229798, 0.14261994913631373], "topics": [1, 2, 3, 4, 5], "cluster": [1, 1, 1, 1, 1], "Freq": [36.922149658203125, 36.0967903137207, 11.123793601989746, 9.104253768920898, 6.753014087677002]}, "tinfo": {"Category": ["Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5"], "Freq": [70.0, 33.0, 327.0, 43.0, 270.0, 298.0, 62.0, 57.0, 38.0, 46.0, 36.0, 40.0, 36.0, 32.0, 29.0, 195.0, 39.0, 19.0, 18.0, 28.0, 42.0, 51.0, 17.0, 36.0, 66.0, 37.0, 54.0, 17.0, 22.0, 11.0, 39.71216583251953, 20.814537048339844, 20.163393020629883, 17.404476165771484, 12.758112907409668, 11.753260612487793, 11.228148460388184, 10.592738151550293, 10.258804321289062, 13.709339141845703, 10.016362190246582, 9.46342945098877, 9.352712631225586, 9.31238079071045, 9.068199157714844, 8.584053039550781, 8.410040855407715, 7.690924644470215, 7.5665082931518555, 7.356299877166748, 6.978392124176025, 6.04782772064209, 5.9461541175842285, 5.600548267364502, 5.400189399719238, 5.422601699829102, 12.24174690246582, 5.281230449676514, 5.337931156158447, 5.0267486572265625, 13.501643180847168, 31.01606559753418, 54.23356246948242, 18.840383529663086, 6.459838390350342, 69.78803253173828, 166.08364868164062, 24.20701789855957, 16.71556854248047, 36.72124099731445, 159.8295440673828, 77.31900024414062, 31.277639389038086, 26.585237503051758, 141.8094024658203, 127.74192810058594, 49.73218536376953, 55.00952911376953, 43.139076232910156, 24.790019989013672, 80.24349212646484, 33.45471954345703, 45.28607177734375, 30.771671295166016, 49.5302734375, 26.171154022216797, 32.3638916015625, 23.581710815429688, 48.01154327392578, 31.562999725341797, 29.039108276367188, 24.646791458129883, 25.554244995117188, 26.357608795166016, 19.440200805664062, 12.950636863708496, 12.863053321838379, 12.54174518585205, 12.187080383300781, 12.03931713104248, 11.62783432006836, 11.042098999023438, 10.44622802734375, 10.250336647033691, 9.473404884338379, 9.33398151397705, 9.168935775756836, 8.91500473022461, 8.712038040161133, 8.449265480041504, 24.513120651245117, 7.852503299713135, 7.725724697113037, 7.51719331741333, 7.240653991699219, 6.812840938568115, 6.745927810668945, 6.614185810089111, 6.740246295928955, 8.656431198120117, 6.4336161613464355, 6.356559753417969, 6.724323272705078, 6.213619709014893, 31.98884391784668, 17.88323974609375, 37.597686767578125, 18.036964416503906, 15.100723266601562, 24.139814376831055, 23.06716537475586, 20.504236221313477, 38.146392822265625, 12.932845115661621, 178.5393524169922, 33.65510559082031, 37.68391036987305, 159.31871032714844, 111.2939682006836, 47.16644287109375, 39.1838493347168, 18.36961555480957, 21.06926727294922, 62.10692596435547, 114.03511810302734, 52.80055618286133, 25.367576599121094, 39.39004135131836, 29.745315551757812, 27.02975082397461, 28.496856689453125, 46.7436408996582, 39.793067932128906, 63.1970329284668, 29.2147216796875, 30.465824127197266, 25.03670883178711, 23.728063583374023, 26.871139526367188, 22.825883865356445, 11.187846183776855, 9.422528266906738, 9.149208068847656, 7.60721492767334, 7.6011552810668945, 6.457585334777832, 6.184707164764404, 5.407566070556641, 5.265144348144531, 5.32512903213501, 5.219007968902588, 4.48017692565918, 4.145948886871338, 3.982869863510132, 3.9073805809020996, 3.884202718734741, 3.7375621795654297, 3.986786365509033, 3.467303991317749, 3.088508129119873, 3.112010955810547, 3.035057306289673, 2.9974703788757324, 2.8336424827575684, 2.817171573638916, 2.8173468112945557, 2.6992034912109375, 9.60765266418457, 2.5836830139160156, 2.5195677280426025, 5.16120719909668, 2.7698843479156494, 11.151638984680176, 11.616397857666016, 6.411280632019043, 4.533935070037842, 4.826505661010742, 12.490952491760254, 8.770431518554688, 10.122693061828613, 10.325844764709473, 28.807039260864258, 12.343301773071289, 23.102523803710938, 8.394198417663574, 6.342468738555908, 8.401443481445312, 6.6248250007629395, 7.165367126464844, 8.710498809814453, 6.895055294036865, 7.918014049530029, 8.016225814819336, 11.315399169921875, 7.837401390075684, 7.59254264831543, 6.443156719207764, 6.352352142333984, 8.92281723022461, 7.5780487060546875, 7.293748378753662, 6.769423007965088, 5.734873294830322, 5.60860013961792, 5.377038955688477, 5.552783489227295, 4.851851463317871, 5.400697708129883, 4.854334354400635, 4.6215500831604, 4.474903583526611, 4.111696720123291, 3.9321560859680176, 3.7226340770721436, 3.815084934234619, 3.4949371814727783, 3.5000247955322266, 3.6549439430236816, 3.1630842685699463, 3.1143252849578857, 3.4184865951538086, 3.106060028076172, 2.9870710372924805, 2.9040732383728027, 2.8497660160064697, 3.202272415161133, 2.5278618335723877, 2.481757164001465, 4.510756492614746, 7.032010078430176, 16.434951782226562, 4.1951584815979, 6.781578063964844, 12.514183044433594, 6.40927791595459, 4.03591775894165, 5.132317066192627, 9.05913257598877, 9.419424057006836, 5.616253852844238, 8.968310356140137, 7.853060245513916, 6.541933059692383, 5.909038066864014, 7.836669445037842, 7.772103309631348, 11.307486534118652, 5.6913042068481445, 6.1349897384643555, 4.83090353012085, 4.434471607208252, 4.222352027893066, 3.860522985458374, 3.815429925918579, 3.462536096572876, 3.3379690647125244, 2.908498764038086, 2.8908417224884033, 2.820157766342163, 2.4229736328125, 2.4114232063293457, 2.345661163330078, 2.3428943157196045, 2.3407201766967773, 2.2137608528137207, 3.1757113933563232, 2.3787760734558105, 2.057813882827759, 2.0572011470794678, 2.0718600749969482, 2.010457992553711, 5.423623085021973, 2.2721664905548096, 2.0054311752319336, 1.9294779300689697, 1.9815539121627808, 1.9812992811203003, 1.9792492389678955, 2.714730739593506, 1.7978993654251099, 1.855926752090454, 5.178073883056641, 3.194859266281128, 2.954198122024536, 5.973241329193115, 4.2560858726501465, 5.871158123016357, 5.302839279174805, 3.3927001953125, 12.43418025970459, 3.0756845474243164, 3.1144402027130127, 5.840332984924316, 11.199914932250977, 4.354745864868164, 7.358287811279297, 5.103623390197754, 7.968985557556152, 7.264319896697998, 5.879751682281494, 5.0152268409729, 4.050976753234863, 5.7548508644104, 3.1963279247283936, 3.9374942779541016], "Term": ["nice", "could", "great", "also", "stay", "place", "bike", "apartment", "provide", "walk", "check", "space", "use", "want", "experience", "location", "modern", "extra", "locate", "property", "quiet", "fantastic", "parking", "amenity", "home", "would", "easy", "shower", "excellent", "ever", "space", "quick", "detail", "condo", "friendly", "guest", "easy_access", "vacation", "spend", "extremely", "addition", "group", "wish", "la", "trip", "enjoyable", "gorgeous", "suggestion", "value", "min", "oasis", "towel", "explore", "quite", "make_sure", "especially", "welcome", "living_room", "full", "manual", "accommodate", "amenity", "home", "definitely", "accommodation", "perfect", "stay", "enjoy", "look", "make", "kevin", "everything", "time", "provide", "great", "place", "venice", "host", "need", "wonderful", "location", "close", "house", "love", "clean", "beautiful", "thank", "family", "beach", "area", "bike", "amazing", "venice_beach", "comfortable", "many", "safe", "answer", "issue", "private", "cute", "friend", "bbq", "rental", "backyard", "cozy", "rent", "quickly", "better", "ride", "bonus", "awesome", "prompt", "able", "accurate", "response", "expectation", "favourite", "still", "cook", "fun", "design", "heart", "toy", "expect", "super", "neighborhood", "quiet", "walking_distance", "star", "question", "much", "recommend", "fantastic", "yard", "great", "walk", "well", "place", "location", "nice", "really", "minute", "responsive", "beach", "kevin", "clean", "abbot_kinney", "house", "apartment", "restaurant", "easy", "everything", "host", "stay", "comfortable", "venice", "venice_beach", "good", "perfect", "thank", "ever", "bathroom", "parking_spot", "local", "problem", "outdoor_space", "best", "perfectly", "business", "recommendation", "professional", "super_responsive", "clear", "incredibly", "second", "internet", "equip", "hour", "meal", "regret", "disappoint", "christmas", "line", "phenomenal", "complete", "smooth", "brilliant", "help", "fix", "front", "outdoor", "gracious", "shower", "locate", "next_time", "immaculate", "air", "modern", "excellent", "experience", "would", "stay", "comfortable", "kevin", "kitchen", "first", "use", "unit", "property", "area", "lovely", "fantastic", "easy", "place", "apartment", "clean", "make", "beach", "board", "machine", "outdoor_patio", "anything", "noise", "drive", "walkable", "dinner", "list", "sleep", "really_enjoyed", "staying", "year", "major", "whenever", "stayed_longer", "communicate", "beach_cruiser", "sized", "size", "hear", "prior", "shade", "ask", "breakfast", "queen", "luxury", "juice", "point", "meeting", "arrival", "santa_monica", "could", "keep", "bedroom", "check", "bar", "pier", "tv", "want", "use", "little", "apartment", "amazing", "come", "spot", "easy", "bike", "stay", "need", "kevin", "amenity", "surprise", "soap", "toilet", "abbot_kinney_blvd", "venice_canal", "often", "shampoo", "week", "path", "gas", "ocean", "human", "soft", "pillow", "organize", "spring", "thoroughly", "level", "service", "different", "essential", "pleasant", "balcony", "cooking", "farmers_market", "exemplary", "sun", "blvd", "linen", "store", "order", "morning", "break", "bicycle", "describe", "large", "beach_towel", "arrive", "coffee", "also", "stop", "paper", "extra", "nice", "take", "provide", "parking", "bike", "apartment", "walk", "property", "exactly", "beach", "see", "use"], "Total": [70.0, 33.0, 327.0, 43.0, 270.0, 298.0, 62.0, 57.0, 38.0, 46.0, 36.0, 40.0, 36.0, 32.0, 29.0, 195.0, 39.0, 19.0, 18.0, 28.0, 42.0, 51.0, 17.0, 36.0, 66.0, 37.0, 54.0, 17.0, 22.0, 11.0, 40.372955322265625, 21.475688934326172, 20.826499938964844, 18.082521438598633, 13.457552909851074, 12.434300422668457, 11.887584686279297, 11.248602867126465, 10.92308235168457, 14.603715896606445, 10.696940422058105, 10.127549171447754, 10.011906623840332, 9.985977172851562, 9.725370407104492, 9.252911567687988, 9.073744773864746, 8.34826946258545, 8.240789413452148, 8.019064903259277, 7.635486125946045, 6.727802276611328, 6.615024566650391, 6.265527725219727, 6.05803108215332, 6.084458827972412, 13.760177612304688, 5.9507670402526855, 6.024404525756836, 5.681196212768555, 15.335744857788086, 36.98019027709961, 66.19990539550781, 23.04018783569336, 7.3501996994018555, 99.89382934570312, 270.03656005859375, 31.815113067626953, 21.06806182861328, 52.171138763427734, 303.9617614746094, 132.1204833984375, 45.80356979370117, 38.73798751831055, 327.5957946777344, 298.9903869628906, 88.01360321044922, 100.98375701904297, 73.947021484375, 37.02094268798828, 195.22238159179688, 57.30166244506836, 88.42259979248047, 51.29119873046875, 110.26718139648438, 43.471614837646484, 61.14012908935547, 37.01515197753906, 123.86746978759766, 65.51881408691406, 62.377315521240234, 43.94928741455078, 56.960086822509766, 68.94939422607422, 20.109474182128906, 13.608134269714355, 13.562652587890625, 13.225600242614746, 12.865010261535645, 12.732236862182617, 12.29728889465332, 11.700934410095215, 11.106118202209473, 10.90841007232666, 10.13268756866455, 9.999211311340332, 9.82245922088623, 9.586026191711426, 9.399864196777344, 9.119267463684082, 26.463319778442383, 8.51045036315918, 8.391566276550293, 8.171814918518066, 7.910698413848877, 7.471868991851807, 7.416590690612793, 7.2769083976745605, 7.418097496032715, 9.530876159667969, 7.096609115600586, 7.017756938934326, 7.4399614334106445, 6.885580539703369, 35.85254669189453, 19.99024772644043, 42.85853958129883, 20.8056640625, 17.303607940673828, 28.593151092529297, 27.318567276000977, 24.903867721557617, 51.58106994628906, 15.254247665405273, 327.5957946777344, 46.733341217041016, 53.59422302246094, 298.9903869628906, 195.22238159179688, 70.54438018798828, 59.827762603759766, 23.910995483398438, 29.109983444213867, 123.86746978759766, 303.9617614746094, 110.26718139648438, 42.80682373046875, 88.42259979248047, 57.148311614990234, 49.26829147338867, 54.632015228271484, 132.1204833984375, 100.98375701904297, 270.03656005859375, 68.94939422607422, 88.01360321044922, 56.960086822509766, 52.17022705078125, 99.89382934570312, 61.14012908935547, 11.91012954711914, 10.125499725341797, 9.911747932434082, 8.309679985046387, 8.329716682434082, 7.186909198760986, 6.896710395812988, 6.120359897613525, 5.962043285369873, 6.045101642608643, 5.935472011566162, 5.224783420562744, 4.849551677703857, 4.683164596557617, 4.597750663757324, 4.576006889343262, 4.429862976074219, 4.739459037780762, 4.206065654754639, 3.7813608646392822, 3.810986042022705, 3.7259955406188965, 3.7234952449798584, 3.5286338329315186, 3.527240037918091, 3.5314879417419434, 3.392749786376953, 12.14073657989502, 3.2751107215881348, 3.2138102054595947, 6.6118998527526855, 3.5388646125793457, 17.176660537719727, 18.89291763305664, 9.766432762145996, 6.476423740386963, 7.33964204788208, 39.463497161865234, 22.480640411376953, 29.314661026000977, 37.15577697753906, 270.03656005859375, 68.94939422607422, 303.9617614746094, 30.797252655029297, 15.403536796569824, 36.558692932128906, 20.59737205505371, 28.78437042236328, 65.51881408691406, 28.556072235107422, 51.58106994628906, 54.632015228271484, 298.9903869628906, 57.148311614990234, 110.26718139648438, 52.171138763427734, 123.86746978759766, 9.688822746276855, 8.280195236206055, 8.018917083740234, 7.47796106338501, 6.424839973449707, 6.304862976074219, 6.080513954162598, 6.29935359954834, 5.5435471534729, 6.174766540527344, 5.556276798248291, 5.319566249847412, 5.181746006011963, 4.838886260986328, 4.664986610412598, 4.427646636962891, 4.553400039672852, 4.190362453460693, 4.220810890197754, 4.425696849822998, 3.8492965698242188, 3.816227436065674, 4.191699028015137, 3.816052198410034, 3.6777420043945312, 3.5904898643493652, 3.586332321166992, 4.046777248382568, 3.216017961502075, 3.1832809448242188, 5.971215724945068, 9.750890731811523, 33.31143569946289, 5.9267897605896, 12.886526107788086, 36.51018142700195, 12.57351303100586, 6.1627936363220215, 10.092206954956055, 32.233707427978516, 36.558692932128906, 15.088631629943848, 57.148311614990234, 43.94928741455078, 25.746519088745117, 19.97052574157715, 54.632015228271484, 62.377315521240234, 270.03656005859375, 73.947021484375, 303.9617614746094, 36.98019027709961, 5.150237083435059, 4.928045749664307, 4.565418243408203, 4.530287742614746, 4.16685152053833, 4.054947853088379, 3.6140213012695312, 3.618955612182617, 3.5399887561798096, 3.129040479660034, 3.130383253097534, 3.0521373748779297, 3.052420139312744, 3.0526461601257324, 2.91924786567688, 4.191174507141113, 3.1416358947753906, 2.766758441925049, 2.767716646194458, 2.789125919342041, 2.7206335067749023, 7.341063499450684, 3.0773894786834717, 2.7222189903259277, 2.6334967613220215, 2.724510431289673, 2.7277679443359375, 2.729435443878174, 3.780264377593994, 2.511692762374878, 2.5940322875976562, 7.5850653648376465, 4.634467601776123, 4.2606201171875, 9.51415729522705, 6.592807292938232, 9.929048538208008, 9.584278106689453, 5.740373611450195, 43.02372741699219, 5.126880168914795, 5.293182373046875, 19.033058166503906, 70.54438018798828, 11.969613075256348, 38.73798751831055, 17.851993560791016, 62.377315521240234, 57.148311614990234, 46.733341217041016, 28.78437042236328, 16.29794692993164, 123.86746978759766, 6.654478073120117, 36.558692932128906], "loglift": [30.0, 29.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.9799000024795532, 0.9650999903678894, 0.9639999866485596, 0.9581000208854675, 0.9430000185966492, 0.9399999976158142, 0.939300000667572, 0.9362999796867371, 0.9336000084877014, 0.9332000017166138, 0.9305999875068665, 0.9284999966621399, 0.9283000230789185, 0.9265000224113464, 0.9264000058174133, 0.9212999939918518, 0.9204000234603882, 0.9143000245094299, 0.9110000133514404, 0.910099983215332, 0.9064000248908997, 0.8898000121116638, 0.8898000121116638, 0.8841999769210815, 0.8813999891281128, 0.8812000155448914, 0.8794000148773193, 0.8769999742507935, 0.8754000067710876, 0.8740000128746033, 0.8690000176429749, 0.8205000162124634, 0.796999990940094, 0.7950999736785889, 0.8672000169754028, 0.6377000212669373, 0.5102999806404114, 0.7231000065803528, 0.7649000287055969, 0.6452000141143799, 0.35359999537467957, 0.46059998869895935, 0.6148999929428101, 0.6198999881744385, 0.1590999960899353, 0.1459999978542328, 0.4255000054836273, 0.3889000117778778, 0.45739999413490295, 0.595300018787384, 0.10729999840259552, 0.45820000767707825, 0.3271999955177307, 0.48539999127388, 0.19599999487400055, 0.48890000581741333, 0.3601999878883362, 0.5454999804496765, 0.04859999939799309, 0.26600000262260437, 0.23180000483989716, 0.4180000126361847, 0.19480000436306, 0.034699998795986176, 0.9850999712944031, 0.9693999886512756, 0.9660000205039978, 0.9659000039100647, 0.9648000001907349, 0.9629999995231628, 0.9629999995231628, 0.9610000252723694, 0.9577000141143799, 0.9567000269889832, 0.95169997215271, 0.9501000046730042, 0.9501000046730042, 0.946399986743927, 0.9430000185966492, 0.9427000284194946, 0.9423999786376953, 0.9384999871253967, 0.9362999796867371, 0.9355000257492065, 0.9304999709129333, 0.9265999794006348, 0.9241999983787537, 0.9235000014305115, 0.9230999946594238, 0.9226999878883362, 0.9208999872207642, 0.9200000166893005, 0.9178000092506409, 0.9162999987602234, 0.9049000144004822, 0.9075999855995178, 0.8880000114440918, 0.8762000203132629, 0.8827999830245972, 0.8496999740600586, 0.8497999906539917, 0.8245999813079834, 0.717199981212616, 0.8539000153541565, 0.41200000047683716, 0.6906999945640564, 0.6668000221252441, 0.3894999921321869, 0.4569999873638153, 0.6164000034332275, 0.59579998254776, 0.755299985408783, 0.6956999897956848, 0.3285999894142151, 0.038600001484155655, 0.2825999855995178, 0.49570000171661377, 0.21040000021457672, 0.3659999966621399, 0.4185999929904938, 0.36809998750686646, -0.020099999383091927, 0.0877000018954277, -0.4332999885082245, 0.16030000150203705, -0.04190000146627426, 0.19699999690055847, 0.23109999299049377, -0.29409998655319214, 0.03370000049471855, 2.133500099182129, 2.1240999698638916, 2.115999937057495, 2.107800006866455, 2.104599952697754, 2.089099884033203, 2.087100028991699, 2.0722999572753906, 2.0717999935150146, 2.0692999362945557, 2.0673999786376953, 2.04229998588562, 2.039299964904785, 2.03410005569458, 2.033400058746338, 2.0322000980377197, 2.026099920272827, 2.023099899291992, 2.0028998851776123, 1.9937000274658203, 1.993499994277954, 1.9910000562667847, 1.979200005531311, 1.976699948310852, 1.9713000059127808, 1.9701999425888062, 1.9673999547958374, 1.9621000289916992, 1.958899974822998, 1.9527000188827515, 1.9484000205993652, 1.9510999917984009, 1.7640999555587769, 1.7096999883651733, 1.7752000093460083, 1.8394999504089355, 1.776900053024292, 1.045699954032898, 1.2547999620437622, 1.1327999830245972, 0.9156000018119812, -0.04190000146627426, 0.4758000075817108, -0.38089999556541443, 0.8962000012397766, 1.3087999820709229, 0.725600004196167, 1.0616999864578247, 0.8054999709129333, 0.17829999327659607, 0.7749999761581421, 0.3221000134944916, 0.2768999934196472, -1.0781999826431274, 0.2092999964952469, -0.4796999990940094, 0.10459999740123749, -0.7742999792098999, 2.3141000270843506, 2.307800054550171, 2.3015999794006348, 2.2969000339508057, 2.2827999591827393, 2.279400110244751, 2.2734999656677246, 2.2702999114990234, 2.263200044631958, 2.262500047683716, 2.261399984359741, 2.2558000087738037, 2.249799966812134, 2.233599901199341, 2.2255001068115234, 2.2230000495910645, 2.2195000648498535, 2.2149999141693115, 2.209199905395508, 2.2051000595092773, 2.2000999450683594, 2.19320011138916, 2.192500114440918, 2.1905999183654785, 2.1884000301361084, 2.184299945831299, 2.1665000915527344, 2.162400007247925, 2.1556999683380127, 2.1475000381469727, 2.1159000396728516, 2.069499969482422, 1.6899000406265259, 2.0508999824523926, 1.7545000314712524, 1.325700044631958, 1.722599983215332, 1.973099946975708, 1.7201999425888062, 1.1272000074386597, 1.0403000116348267, 1.4082000255584717, 0.5444999933242798, 0.6743000149726868, 1.0263999700546265, 1.1786999702453613, 0.4546000063419342, 0.31380000710487366, -0.7767000198364258, -0.1679999977350235, -1.506500005722046, 0.3610999882221222, 2.5455000400543213, 2.540600061416626, 2.5274999141693115, 2.523400068283081, 2.509999990463257, 2.5006000995635986, 2.4779999256134033, 2.4704999923706055, 2.467900037765503, 2.439500093460083, 2.4342000484466553, 2.4319000244140625, 2.4305999279022217, 2.4296000003814697, 2.4184999465942383, 2.4177000522613525, 2.4170000553131104, 2.3991000652313232, 2.3984999656677246, 2.397900104522705, 2.392699956893921, 2.3924999237060547, 2.3917999267578125, 2.3896000385284424, 2.3840999603271484, 2.376800060272217, 2.375499963760376, 2.373800039291382, 2.3640999794006348, 2.36080002784729, 2.3603999614715576, 2.3134000301361084, 2.323199987411499, 2.3289999961853027, 2.2297000885009766, 2.2576000690460205, 2.169800043106079, 2.103300094604492, 2.169300079345703, 1.4538999795913696, 2.1842000484466553, 2.164799928665161, 1.513800024986267, 0.8547999858856201, 1.6841000318527222, 1.0341999530792236, 1.4429999589920044, 0.637499988079071, 0.6324999928474426, 0.6222000122070312, 0.9477999806404114, 1.3030999898910522, -0.37400001287460327, 1.961899995803833, 0.4668000042438507], "logprob": [30.0, 29.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, -4.518099784851074, -5.164100170135498, -5.195899963378906, -5.343100070953369, -5.653600215911865, -5.7357001304626465, -5.781400203704834, -5.839600086212158, -5.871600151062012, -5.581699848175049, -5.895599842071533, -5.952300071716309, -5.964099884033203, -5.968400001525879, -5.994999885559082, -6.049900054931641, -6.070400238037109, -6.1596999168396, -6.176000118255615, -6.20419979095459, -6.256999969482422, -6.400100231170654, -6.416999816894531, -6.476900100708008, -6.513299942016602, -6.509200096130371, -5.694900035858154, -6.535600185394287, -6.524899959564209, -6.585000038146973, -5.5970001220703125, -4.7652997970581055, -4.206500053405762, -5.263800144195557, -6.334199905395508, -3.9542999267578125, -3.0873000621795654, -5.0131001472473145, -5.383399963378906, -4.596399784088135, -3.125699996948242, -3.851799964904785, -4.756899833679199, -4.919400215148926, -3.245300054550171, -3.3498001098632812, -4.293099880218506, -4.192299842834473, -4.435400009155273, -4.989299774169922, -3.81469988822937, -4.689599990844727, -4.3867998123168945, -4.773200035095215, -4.2972002029418945, -4.935100078582764, -4.722700119018555, -5.039299964904785, -4.3282999992370605, -4.747799873352051, -4.831099987030029, -4.995100021362305, -4.959000110626221, -4.927999973297119, -5.209799766540527, -5.616000175476074, -5.622799873352051, -5.648099899291992, -5.676799774169922, -5.689000129699707, -5.723800182342529, -5.7754998207092285, -5.830900192260742, -5.849899768829346, -5.928699970245361, -5.94350004196167, -5.961400032043457, -5.9893999099731445, -6.012499809265137, -6.043099880218506, -4.978000164031982, -6.116300106048584, -6.132599830627441, -6.159999847412109, -6.197500228881836, -6.258399963378906, -6.268199920654297, -6.288000106811523, -6.269100189208984, -6.018899917602539, -6.3155999183654785, -6.327700138092041, -6.271399974822998, -6.350399971008301, -4.7118000984191895, -5.293300151824951, -4.55019998550415, -5.284800052642822, -5.462399959564209, -4.993299961090088, -5.03879976272583, -5.156499862670898, -4.535699844360352, -5.617400169372559, -2.9923999309539795, -4.660999774932861, -4.547900199890137, -3.106300115585327, -3.4649999141693115, -4.323500156402588, -4.508900165557861, -5.266499996185303, -5.12939977645874, -4.048299789428711, -3.440700054168701, -4.210700035095215, -4.943699836730957, -4.503699779510498, -4.7845001220703125, -4.880199909210205, -4.827400207519531, -4.332499980926514, -4.493500232696533, -4.030900001525879, -4.802499771118164, -4.7606000900268555, -4.9567999839782715, -5.010499954223633, -4.886099815368652, -5.049300193786621, -4.58519983291626, -4.756999969482422, -4.786399841308594, -4.9710001945495605, -4.971799850463867, -5.134799957275391, -5.177999973297119, -5.312300205230713, -5.338900089263916, -5.327600002288818, -5.347700119018555, -5.500400066375732, -5.577899932861328, -5.618100166320801, -5.637199878692627, -5.643099784851074, -5.681600093841553, -5.617099761962891, -5.756700038909912, -5.872399806976318, -5.864799976348877, -5.889800071716309, -5.902299880981445, -5.958499908447266, -5.964300155639648, -5.964300155639648, -6.0071001052856445, -4.737500190734863, -6.05079984664917, -6.076000213623047, -5.35890007019043, -5.981299877166748, -4.588500022888184, -4.547599792480469, -5.142000198364258, -5.488500118255615, -5.425899982452393, -4.475100040435791, -4.828700065612793, -4.685299873352051, -4.66540002822876, -3.639400005340576, -4.4868998527526855, -3.860100030899048, -4.872499942779541, -5.1528000831604, -4.871699810028076, -5.1092000007629395, -5.030799865722656, -4.8354997634887695, -5.069300174713135, -4.9309000968933105, -4.918600082397461, -4.57390022277832, -4.941100120544434, -4.972899913787842, -5.13700008392334, -5.151199817657471, -4.611100196838379, -4.774499893188477, -4.812699794769287, -4.88730001449585, -5.053100109100342, -5.075399875640869, -5.117599964141846, -5.085400104522705, -5.220399856567383, -5.1132001876831055, -5.219799995422363, -5.269000053405762, -5.301199913024902, -5.385900020599365, -5.430500030517578, -5.485300064086914, -5.460700035095215, -5.548399925231934, -5.546899795532227, -5.503600120544434, -5.648200035095215, -5.663700103759766, -5.570499897003174, -5.666399955749512, -5.705399990081787, -5.73360013961792, -5.752500057220459, -5.635900020599365, -5.872300148010254, -5.890699863433838, -5.2932000160217285, -4.8491997718811035, -4.00029993057251, -5.365799903869629, -4.885499954223633, -4.272799968719482, -4.941999912261963, -5.4045000076293945, -5.1641998291015625, -4.595900058746338, -4.5569000244140625, -5.073999881744385, -4.605999946594238, -4.738800048828125, -4.921500205993652, -5.023200035095215, -4.740900039672852, -4.749199867248535, -4.374199867248535, -5.060800075531006, -4.9857001304626465, -5.224699974060059, -5.011600017547607, -5.0605998039245605, -5.150199890136719, -5.161900043487549, -5.258999824523926, -5.295599937438965, -5.433300018310547, -5.4394001960754395, -5.464200019836426, -5.616000175476074, -5.620699882507324, -5.648399829864502, -5.649600028991699, -5.6504998207092285, -5.706299781799316, -5.345399856567383, -5.634399890899658, -5.779300212860107, -5.779600143432617, -5.772500038146973, -5.802599906921387, -4.810200214385986, -5.680200099945068, -5.805099964141846, -5.843699932098389, -5.8171000480651855, -5.817200183868408, -5.81820011138916, -5.502299785614014, -5.914299964904785, -5.882599830627441, -4.856500148773193, -5.339399814605713, -5.417699813842773, -4.713699817657471, -5.052599906921387, -4.730899810791016, -4.832699775695801, -5.279300212860107, -3.9804999828338623, -5.377399921417236, -5.3649001121521, -4.736199855804443, -4.085100173950195, -5.029699802398682, -4.505099773406982, -4.870999813079834, -4.4253997802734375, -4.51800012588501, -4.729400157928467, -4.888500213623047, -5.1020002365112305, -4.750899791717529, -5.339000225067139, -5.13040018081665]}, "token.table": {"Topic": [1, 2, 5, 5, 2, 1, 3, 1, 2, 1, 3, 4, 1, 2, 3, 4, 5, 1, 2, 3, 4, 1, 3, 4, 2, 4, 1, 2, 3, 4, 5, 1, 2, 3, 4, 4, 5, 2, 5, 4, 2, 3, 2, 5, 1, 4, 3, 2, 1, 2, 3, 4, 5, 4, 1, 5, 1, 2, 3, 4, 3, 2, 1, 5, 1, 2, 4, 5, 5, 4, 2, 3, 5, 4, 3, 3, 1, 2, 3, 4, 3, 1, 2, 3, 3, 1, 2, 4, 5, 1, 5, 1, 2, 4, 5, 1, 2, 3, 5, 4, 3, 1, 2, 5, 1, 2, 4, 2, 2, 1, 3, 4, 3, 5, 2, 1, 5, 4, 3, 4, 1, 2, 3, 4, 1, 1, 2, 3, 5, 1, 3, 1, 5, 3, 1, 2, 3, 4, 1, 5, 2, 3, 5, 2, 2, 2, 3, 1, 1, 5, 1, 1, 2, 3, 4, 5, 1, 2, 3, 5, 2, 1, 2, 3, 5, 3, 2, 1, 3, 1, 2, 5, 1, 2, 3, 5, 1, 3, 1, 2, 3, 5, 1, 1, 4, 2, 3, 4, 1, 2, 3, 1, 2, 3, 3, 1, 2, 3, 4, 5, 5, 1, 3, 3, 3, 2, 4, 2, 4, 1, 2, 3, 4, 5, 2, 3, 4, 1, 3, 5, 5, 3, 1, 5, 4, 1, 2, 3, 4, 1, 3, 1, 3, 1, 2, 3, 4, 5, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 4, 4, 1, 2, 3, 4, 1, 1, 2, 3, 4, 1, 2, 4, 5, 1, 2, 3, 2, 4, 5, 2, 4, 1, 2, 3, 4, 2, 4, 3, 4, 1, 2, 3, 4, 5, 4, 1, 5, 5, 5, 5, 3, 5, 4, 3, 3, 5, 2, 5, 3, 5, 1, 2, 4, 3, 3, 4, 5, 5, 1, 2, 3, 4, 5, 4, 4, 2, 3, 3, 2, 1, 2, 3, 5, 1, 2, 4, 5, 4, 1, 2, 1, 2, 2, 3, 1, 1, 2, 3, 5, 4, 2, 3, 3, 3, 2, 2, 2, 1, 2, 1, 2, 3, 4, 2, 2, 4, 5, 3, 1, 5, 5, 4, 5, 1, 3, 5, 4, 4, 4, 3, 5, 5, 1, 1, 2, 4, 5, 1, 2, 1, 2, 3, 4, 5, 4, 4, 2, 4, 5, 5, 1, 5, 2, 3, 4, 3, 5, 1, 4, 5, 1, 2, 3, 5, 1, 2, 3, 5, 1, 2, 1, 1, 3, 4, 1, 3, 5, 1, 2, 3, 4, 5, 1, 1, 1, 2, 3, 4, 5, 1, 2, 3, 5, 1, 2, 5, 4, 1, 2, 3, 2, 3, 4, 5, 1, 3, 1, 2, 3, 4, 1, 1, 2, 5, 1, 2, 3, 2, 4, 4], "Freq": [0.35041141510009766, 0.5840190649032593, 0.04672152176499367, 0.8829461336135864, 0.9533381462097168, 0.912899911403656, 0.06520713865756989, 0.8163043260574341, 0.9789746999740601, 0.9348467588424683, 0.6812321543693542, 0.2724928557872772, 0.18594390153884888, 0.4881027638912201, 0.04648597538471222, 0.02324298769235611, 0.2789158523082733, 0.5688374638557434, 0.20478147268295288, 0.04550699517130852, 0.18202798068523407, 0.8382866382598877, 0.02704150415956974, 0.13520751893520355, 0.9585145711898804, 0.9360840320587158, 0.05249498784542084, 0.5249499082565308, 0.13998663425445557, 0.1574849635362625, 0.12248830497264862, 0.4884093403816223, 0.3510442078113556, 0.13736511766910553, 0.030525583773851395, 0.8373504281044006, 0.1674700826406479, 0.417350172996521, 0.5216876864433289, 0.7861527800559998, 0.9447038173675537, 0.03778815269470215, 0.916723906993866, 0.6499015092849731, 0.47719359397888184, 0.47719359397888184, 0.8888450264930725, 0.940095841884613, 0.3875109553337097, 0.5005349516868591, 0.048438869416713715, 0.016146289184689522, 0.048438869416713715, 0.7159284949302673, 0.40285834670066833, 0.6042875051498413, 0.5980914235115051, 0.3910597860813141, 0.4656026065349579, 0.5432030558586121, 0.869979977607727, 0.9388666152954102, 0.23470762372016907, 0.7041228413581848, 0.4649125933647156, 0.27253496646881104, 0.12825174629688263, 0.12825174629688263, 0.73275226354599, 0.9289054274559021, 0.8772634267807007, 0.2157745212316513, 0.6473235487937927, 0.815717875957489, 0.8842384815216064, 0.8386386632919312, 0.19172734022140503, 0.32867544889450073, 0.1369480937719345, 0.3560650646686554, 0.8051539659500122, 0.45344406366348267, 0.48065072298049927, 0.07255104929208755, 0.82481849193573, 0.5758995413780212, 0.38393300771713257, 0.01745150052011013, 0.01745150052011013, 0.34840938448905945, 0.522614061832428, 0.07768040150403976, 0.6214432120323181, 0.2718814015388489, 0.03884020075201988, 0.37708815932273865, 0.4205983281135559, 0.17404069006443024, 0.014503390528261662, 0.8784644603729248, 0.8505233526229858, 0.9401343464851379, 0.9436382055282593, 0.73469477891922, 0.030019721016287804, 0.48031553626060486, 0.48031553626060486, 0.8882144689559937, 0.9424895644187927, 0.8246460556983948, 0.0868048444390297, 0.0868048444390297, 0.31531956791877747, 0.6306391358375549, 0.8454741835594177, 0.9603149890899658, 0.7170705199241638, 0.9524787068367004, 0.7871978282928467, 0.9516463875770569, 0.18304285407066345, 0.5125200152397156, 0.14643427729606628, 0.14643427729606628, 0.925335168838501, 0.7543584704399109, 0.12572641670703888, 0.03143160417675972, 0.06286320835351944, 0.9726668000221252, 0.9029624462127686, 0.8217657804489136, 0.7351229190826416, 0.9235835671424866, 0.5828014016151428, 0.3557358980178833, 0.03027539700269699, 0.03027539700269699, 0.7362890839576721, 0.24542967975139618, 0.5782753229141235, 0.40034446120262146, 0.7340768575668335, 0.8713862299919128, 0.9368472695350647, 0.6481398344039917, 0.3411262333393097, 0.9070261120796204, 0.683022141456604, 0.3152409791946411, 0.9586601257324219, 0.6483831405639648, 0.27015963196754456, 0.027015963569283485, 0.027015963569283485, 0.027015963569283485, 0.09693478792905807, 0.7367043495178223, 0.1550956517457962, 0.7594465613365173, 0.9438298940658569, 0.19476047158241272, 0.19476047158241272, 0.38952094316482544, 0.19476047158241272, 0.9159995913505554, 0.9758248329162598, 0.9660003185272217, 0.9334714412689209, 0.8299575448036194, 0.9442993402481079, 0.6391735672950745, 0.46003249287605286, 0.46003249287605286, 0.05750406160950661, 0.03833604231476784, 0.8816646337509155, 0.847729504108429, 0.4334610104560852, 0.5464050769805908, 0.018315253779292107, 0.00305254221893847, 0.8886651396751404, 0.9650723934173584, 0.7793631553649902, 0.8549740314483643, 0.8236732482910156, 0.1647346466779709, 0.8157111406326294, 0.1661633849143982, 0.015105761587619781, 0.5446420311927795, 0.39610329270362854, 0.05941549688577652, 0.8439781665802002, 0.5089196562767029, 0.44106370210647583, 0.022618651390075684, 0.022618651390075684, 0.011309325695037842, 0.6552785038948059, 0.15440620481967926, 0.7720310091972351, 0.8541232943534851, 0.8741245865821838, 0.9829421639442444, 0.741330623626709, 0.1687254011631012, 0.6749016046524048, 0.5263820290565491, 0.3750471770763397, 0.07566741108894348, 0.01973932422697544, 0.003289887448772788, 0.6494085788726807, 0.2597634196281433, 0.06494085490703583, 0.9012638330459595, 0.3033609092235565, 0.606721818447113, 0.7228676080703735, 0.805694580078125, 0.2645317614078522, 0.7935953140258789, 0.9019495844841003, 0.13255012035369873, 0.26510024070739746, 0.1988251805305481, 0.3976503610610962, 0.8402278423309326, 0.9627326130867004, 0.37050920724868774, 0.6351586580276489, 0.4097890853881836, 0.5685823559761047, 0.01024472713470459, 0.005122363567352295, 0.005122363567352295, 0.8069086074829102, 0.047465212643146515, 0.14239563047885895, 0.6043921709060669, 0.33144086599349976, 0.019496522843837738, 0.038993045687675476, 0.6303387880325317, 0.10505646467208862, 0.2451317459344864, 0.8365092277526855, 0.966160774230957, 0.8266364932060242, 0.709204375743866, 0.11500611901283264, 0.11500611901283264, 0.038335371762514114, 0.8253506422042847, 0.8800963163375854, 0.9448282718658447, 0.7132556438446045, 0.6282826066017151, 0.8729197382926941, 0.7527917623519897, 0.1254652887582779, 0.08364352583885193, 0.40543797612190247, 0.25339871644973755, 0.30407845973968506, 0.13183802366256714, 0.13183802366256714, 0.6591901183128357, 0.8419182300567627, 0.14642056822776794, 0.5814973711967468, 0.2839871048927307, 0.054092779755592346, 0.08113916963338852, 0.9004390835762024, 0.10004878789186478, 0.6143491864204407, 0.30717459321022034, 0.07087736576795578, 0.6662472486495972, 0.07087736576795578, 0.0283509474247694, 0.15593020617961884, 0.9338753819465637, 0.9167720079421997, 0.6388993859291077, 0.7398368716239929, 0.7710004448890686, 0.6851080060005188, 0.7562122941017151, 0.1512424647808075, 0.8729358315467834, 0.8348512053489685, 0.37784454226493835, 0.5667667984962463, 0.6721938252449036, 0.28008076548576355, 0.9080134034156799, 0.8474603295326233, 0.7007439732551575, 0.2702869772911072, 0.03003188595175743, 0.8169454336166382, 0.8501874208450317, 0.6490563154220581, 0.32452815771102905, 0.6551693081855774, 0.4281074106693268, 0.5317896604537964, 0.036790478974580765, 0.1362200379371643, 0.6811002492904663, 0.9328306317329407, 0.7861166596412659, 0.9327625632286072, 0.9604167938232422, 0.8423929810523987, 0.940020740032196, 0.555857241153717, 0.034741077572107315, 0.2431875318288803, 0.17370538413524628, 0.6969902515411377, 0.02581445500254631, 0.07744336128234863, 0.18070118129253387, 0.8355405926704407, 0.13989363610744476, 0.839361846446991, 0.9778499007225037, 0.916267454624176, 0.8866377472877502, 0.11666286736726761, 0.9576208591461182, 0.26743435859680176, 0.6518712639808655, 0.03342929482460022, 0.05014394596219063, 0.8998831510543823, 0.8432425260543823, 0.1606176197528839, 0.8271159529685974, 0.7933651804924011, 0.9000709652900696, 0.9004046320915222, 0.884877622127533, 0.2748197913169861, 0.7214019894599915, 0.2841584086418152, 0.5480198264122009, 0.12178218364715576, 0.040594059973955154, 0.9574606418609619, 0.9553110003471375, 0.7178831100463867, 0.20510946214199066, 0.8699906468391418, 0.45082423090934753, 0.45082423090934753, 0.7226173281669617, 0.7157002687454224, 0.8301002383232117, 0.17465560138225555, 0.6404038667678833, 0.11643707007169724, 0.9038124680519104, 0.947685182094574, 0.8097472190856934, 0.849500298500061, 0.811680793762207, 0.6552178263664246, 0.9907622337341309, 0.9154924750328064, 0.650959312915802, 0.30044275522232056, 0.715789794921875, 0.11558283120393753, 0.8668712377548218, 0.6147315502166748, 0.23330174386501312, 0.10739286243915558, 0.04073522612452507, 0.0037032023537904024, 0.9034144878387451, 0.939926266670227, 0.961946964263916, 0.19505038857460022, 0.585151195526123, 0.7962757349014282, 0.9582824110984802, 0.733200192451477, 0.892544686794281, 0.0836760625243187, 0.02789202146232128, 0.7655819654464722, 0.7766633033752441, 0.41772446036338806, 0.1670897752046585, 0.334179550409317, 0.5233878493309021, 0.37618499994277954, 0.0817793533205986, 0.6366109848022461, 0.6768031716346741, 0.28382065892219543, 0.021832359954714775, 0.8761519193649292, 0.8918216824531555, 0.9408650994300842, 0.9254146218299866, 0.29725906252861023, 0.1981727033853531, 0.4954317808151245, 0.6311484575271606, 0.33984917402267456, 0.04854988306760788, 0.3282392919063568, 0.0820598229765892, 0.21882620453834534, 0.2461794763803482, 0.10941310226917267, 0.9778991937637329, 0.9707807898521423, 0.56809401512146, 0.3408564031124115, 0.03408563882112503, 0.03408563882112503, 0.011361880227923393, 0.45645996928215027, 0.4389038383960724, 0.10533691942691803, 0.7199680805206299, 0.14978599548339844, 0.7275319695472717, 0.12838800251483917, 0.8222988843917847, 0.04806383326649666, 0.8651490211486816, 0.04806383326649666, 0.5894450545310974, 0.12409369647502899, 0.2792108356952667, 0.8289684653282166, 0.8720817565917969, 0.07267347723245621, 0.24256345629692078, 0.7090316414833069, 0.05597618222236633, 0.8574515581130981, 0.8989296555519104, 0.6752934455871582, 0.2701173722743988, 0.05402347445487976, 0.1614822894334793, 0.5382742881774902, 0.2691371440887451, 0.852221667766571, 0.1311110258102417, 0.7719405889511108], "Term": ["abbot_kinney", "abbot_kinney", "abbot_kinney", "abbot_kinney_blvd", "able", "accommodate", "accommodate", "accommodation", "accurate", "addition", "air", "air", "also", "also", "also", "also", "also", "amazing", "amazing", "amazing", "amazing", "amenity", "amenity", "amenity", "answer", "anything", "apartment", "apartment", "apartment", "apartment", "apartment", "area", "area", "area", "area", "arrival", "arrival", "arrive", "arrive", "ask", "awesome", "awesome", "backyard", "balcony", "bar", "bar", "bathroom", "bbq", "beach", "beach", "beach", "beach", "beach", "beach_cruiser", "beach_towel", "beach_towel", "beautiful", "beautiful", "bedroom", "bedroom", "best", "better", "bicycle", "bicycle", "bike", "bike", "bike", "bike", "blvd", "board", "bonus", "break", "break", "breakfast", "brilliant", "business", "check", "check", "check", "check", "christmas", "clean", "clean", "clean", "clear", "close", "close", "close", "close", "coffee", "coffee", "come", "come", "come", "come", "comfortable", "comfortable", "comfortable", "comfortable", "communicate", "complete", "condo", "cook", "cooking", "could", "could", "could", "cozy", "cute", "definitely", "definitely", "definitely", "describe", "describe", "design", "detail", "different", "dinner", "disappoint", "drive", "easy", "easy", "easy", "easy", "easy_access", "enjoy", "enjoy", "enjoy", "enjoy", "enjoyable", "equip", "especially", "essential", "ever", "everything", "everything", "everything", "everything", "exactly", "exactly", "excellent", "excellent", "exemplary", "expect", "expectation", "experience", "experience", "explore", "extra", "extra", "extremely", "family", "family", "family", "family", "family", "fantastic", "fantastic", "fantastic", "farmers_market", "favourite", "first", "first", "first", "first", "fix", "friend", "friendly", "front", "full", "fun", "gas", "good", "good", "good", "good", "gorgeous", "gracious", "great", "great", "great", "great", "group", "guest", "hear", "heart", "help", "help", "home", "home", "home", "host", "host", "host", "hour", "house", "house", "house", "house", "house", "human", "immaculate", "immaculate", "incredibly", "internet", "issue", "juice", "keep", "keep", "kevin", "kevin", "kevin", "kevin", "kevin", "kitchen", "kitchen", "kitchen", "la", "large", "large", "level", "line", "linen", "linen", "list", "little", "little", "little", "little", "living_room", "local", "locate", "locate", "location", "location", "location", "location", "location", "look", "look", "look", "love", "love", "love", "love", "lovely", "lovely", "lovely", "luxury", "machine", "major", "make", "make", "make", "make", "make_sure", "manual", "many", "meal", "meeting", "min", "minute", "minute", "minute", "modern", "modern", "modern", "morning", "morning", "morning", "much", "much", "need", "need", "need", "need", "neighborhood", "neighborhood", "next_time", "next_time", "nice", "nice", "nice", "nice", "nice", "noise", "oasis", "ocean", "often", "order", "organize", "outdoor", "outdoor", "outdoor_patio", "outdoor_space", "paper", "paper", "parking", "parking", "parking_spot", "path", "perfect", "perfect", "perfect", "perfectly", "phenomenal", "pier", "pier", "pillow", "place", "place", "place", "pleasant", "pleasant", "point", "prior", "private", "problem", "professional", "prompt", "property", "property", "property", "property", "provide", "provide", "provide", "provide", "queen", "question", "question", "quick", "quickly", "quiet", "quiet", "quite", "really", "really", "really", "really", "really_enjoyed", "recommend", "recommend", "recommendation", "regret", "rent", "rental", "response", "responsive", "responsive", "restaurant", "restaurant", "restaurant", "restaurant", "ride", "safe", "santa_monica", "santa_monica", "second", "see", "see", "service", "shade", "shampoo", "shower", "shower", "shower", "size", "sized", "sleep", "smooth", "soap", "soft", "space", "spend", "spot", "spot", "spring", "star", "star", "stay", "stay", "stay", "stay", "stay", "stayed_longer", "staying", "still", "stop", "stop", "store", "suggestion", "sun", "super", "super", "super", "super_responsive", "surprise", "take", "take", "take", "thank", "thank", "thank", "thoroughly", "time", "time", "time", "toilet", "towel", "toy", "trip", "tv", "tv", "tv", "unit", "unit", "unit", "use", "use", "use", "use", "use", "vacation", "value", "venice", "venice", "venice", "venice", "venice", "venice_beach", "venice_beach", "venice_beach", "venice_canal", "walk", "walk", "walk", "walkable", "walking_distance", "walking_distance", "walking_distance", "want", "want", "want", "week", "welcome", "welcome", "well", "well", "well", "whenever", "wish", "wonderful", "wonderful", "wonderful", "would", "would", "would", "yard", "yard", "year"]}, "R": 30, "lambda.step": 0.01, "plot.opts": {"xlab": "PC1", "ylab": "PC2"}, "topic.order": [2, 5, 1, 4, 3]};
+
+                    function LDAvis_load_lib(url, callback){
+                      var s = document.createElement('script');
+                      s.src = url;
+                      s.async = true;
+                      s.onreadystatechange = s.onload = callback;
+                      s.onerror = function(){console.warn("failed to load library " + url);};
+                      document.getElementsByTagName("head")[0].appendChild(s);
+                    }
+
+                    if(typeof(LDAvis) !== "undefined"){
+                       // already loaded: just create the visualization
+                       !function(LDAvis){
+                           new LDAvis("#" + "ldavis_el40581122081387928921006624", ldavis_el40581122081387928921006624_data);
+                       }(LDAvis);
+                    }else if(typeof define === "function" && define.amd){
+                       // require.js is available: use it to load d3/LDAvis
+                       require.config({paths: {d3: "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min"}});
+                       require(["d3"], function(d3){
+                          window.d3 = d3;
+                          LDAvis_load_lib("https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.js", function(){
+                            new LDAvis("#" + "ldavis_el40581122081387928921006624", ldavis_el40581122081387928921006624_data);
+                          });
+                        });
+                    }else{
+                        // require.js not available: dynamically load d3 & LDAvis
+                        LDAvis_load_lib("https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js", function(){
+                             LDAvis_load_lib("https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.js", function(){
+                                     new LDAvis("#" + "ldavis_el40581122081387928921006624", ldavis_el40581122081387928921006624_data);
+                                })
+                             });
+                    }
+                </script>
+                    
+                
+                <!--
+                <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.css">
+
+
+                <div id="ldavis_el17401123251904244665007767"></div>
+                <script type="text/javascript">
+
+                var ldavis_el17401123251904244665007767_data = {"mdsDat": {"x": [-0.1520149943332291, 0.032819344928942146, -0.17927595603680072, -0.16040089692094556, 0.09083879640365529, -0.067875272131432, 0.4359089780898097], "y": [-0.10506343367767061, -0.028907604031361746, -0.06712433881378688, 0.04462270509534051, 0.36732687006452686, -0.0767133167268559, -0.13414088191019272], "topics": [1, 2, 3, 4, 5, 6, 7], "cluster": [1, 1, 1, 1, 1, 1, 1], "Freq": [24.390661239624023, 19.441587448120117, 18.384002685546875, 14.702004432678223, 10.158126831054688, 9.606976509094238, 3.316633701324463]}, "tinfo": {"Category": ["Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Default", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic1", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic2", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic3", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic4", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic5", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic6", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7", "Topic7"], "Freq": [13903.0, 5924.0, 16881.0, 4562.0, 3641.0, 3116.0, 14502.0, 7322.0, 2312.0, 1796.0, 2298.0, 2024.0, 5618.0, 1119.0, 1792.0, 1944.0, 7199.0, 1371.0, 1811.0, 4791.0, 2547.0, 4588.0, 2087.0, 2728.0, 850.0, 4898.0, 2739.0, 1082.0, 1319.0, 4331.0, 1359.134033203125, 1275.515380859375, 1090.51220703125, 740.3699340820312, 655.3431396484375, 612.9503173828125, 362.80120849609375, 343.3432922363281, 331.3996276855469, 322.2048645019531, 284.65338134765625, 251.67001342773438, 234.85818481445312, 220.21949768066406, 215.6410369873047, 222.96759033203125, 188.10389709472656, 186.50930786132812, 183.40673828125, 179.80787658691406, 167.4840087890625, 142.73094177246094, 127.68254089355469, 124.19599914550781, 117.58551025390625, 114.9273452758789, 113.01705932617188, 112.44961547851562, 108.45442962646484, 107.0392837524414, 2400.780517578125, 499.86029052734375, 348.2591857910156, 655.201171875, 201.1745147705078, 493.83868408203125, 1556.5350341796875, 207.52552795410156, 376.6461181640625, 2552.349853515625, 2002.2071533203125, 894.9151000976562, 1801.9486083984375, 1726.54150390625, 2737.844482421875, 1738.51025390625, 513.9412231445312, 2089.65771484375, 1411.1446533203125, 5625.41259765625, 2102.221923828125, 1590.6573486328125, 625.5167236328125, 2549.15869140625, 3486.208740234375, 1462.389892578125, 701.5013427734375, 831.0752563476562, 991.3963012695312, 1048.7574462890625, 1248.612548828125, 807.722900390625, 1219.401123046875, 965.2022705078125, 1672.87890625, 1250.5567626953125, 918.3272705078125, 922.2479248046875, 717.21142578125, 542.164306640625, 509.662353515625, 507.11468505859375, 492.19842529296875, 473.0064697265625, 442.7956237792969, 339.405029296875, 307.77423095703125, 272.5641784667969, 263.7542724609375, 241.9941864013672, 234.61886596679688, 223.0080108642578, 214.591552734375, 225.3030548095703, 204.23394775390625, 203.88427734375, 201.2813262939453, 193.33200073242188, 188.20558166503906, 188.04360961914062, 186.824951171875, 186.0583953857422, 183.98043823242188, 173.82432556152344, 169.17137145996094, 165.65219116210938, 149.55738830566406, 148.51792907714844, 469.35174560546875, 346.4535217285156, 882.1519775390625, 318.30389404296875, 445.5066833496094, 806.7678833007812, 2025.5421142578125, 792.55322265625, 1973.5367431640625, 239.4608612060547, 1031.3641357421875, 575.3004150390625, 869.8549194335938, 1105.4376220703125, 1050.4578857421875, 1329.9775390625, 1784.108154296875, 491.4155578613281, 408.9034729003906, 545.7562255859375, 937.920166015625, 845.3856201171875, 944.1940307617188, 587.2203369140625, 664.7225341796875, 790.166259765625, 783.7180786132812, 870.7803955078125, 666.2786254882812, 698.950439453125, 679.5972290039062, 804.5225219726562, 638.5278930664062, 550.866943359375, 614.3491821289062, 590.0581665039062, 579.2379760742188, 1811.0758056640625, 563.7269287109375, 365.9132995605469, 285.67669677734375, 269.1446838378906, 232.0129852294922, 176.18582153320312, 130.19052124023438, 123.23649597167969, 104.15619659423828, 80.59032440185547, 80.92926788330078, 78.37322998046875, 404.4913024902344, 70.79544067382812, 63.8368034362793, 57.34244155883789, 55.48049545288086, 54.71958541870117, 51.90408706665039, 52.11697006225586, 48.22356033325195, 45.817222595214844, 45.74784469604492, 41.387603759765625, 38.50370407104492, 37.68328857421875, 33.68504333496094, 31.894519805908203, 31.418880462646484, 654.1621704101562, 839.5548706054688, 367.8511657714844, 1809.33544921875, 683.7652587890625, 606.9645385742188, 406.0098876953125, 152.3448028564453, 298.1669921875, 308.35992431640625, 7974.1435546875, 4457.25927734375, 1956.3134765625, 428.91351318359375, 2654.16552734375, 6575.953125, 2916.306640625, 1077.3931884765625, 3075.001220703125, 6721.517578125, 2417.864501953125, 629.7189331054688, 1825.722412109375, 2856.6025390625, 1657.2774658203125, 1013.3657836914062, 532.3345336914062, 1481.200927734375, 1164.11083984375, 686.7109375, 1214.176025390625, 1031.9749755859375, 510.6731872558594, 818.720458984375, 708.9660034179688, 673.6162719726562, 711.3674926757812, 666.4232788085938, 644.1514892578125, 3115.07763671875, 2023.4720458984375, 1318.4942626953125, 852.3911743164062, 693.8079223632812, 608.4043579101562, 577.1934204101562, 538.216796875, 528.8591918945312, 388.870361328125, 356.1767883300781, 344.720947265625, 311.37457275390625, 256.9042663574219, 160.15298461914062, 152.81463623046875, 148.57305908203125, 109.89881896972656, 103.41854858398438, 100.44005584716797, 94.68037414550781, 67.08038330078125, 52.83597946166992, 52.35496520996094, 51.28319549560547, 50.156551361083984, 48.34530258178711, 43.82720947265625, 43.729434967041016, 43.01526641845703, 3408.290283203125, 3930.9453125, 448.49835205078125, 3053.480712890625, 984.7454833984375, 3272.744140625, 1280.8450927734375, 1756.2493896484375, 1208.332763671875, 2477.068359375, 974.8323364257812, 1435.033203125, 705.2620849609375, 1043.822509765625, 1002.39404296875, 591.016845703125, 699.72314453125, 880.43359375, 826.2046508789062, 795.591796875, 761.772705078125, 874.5283813476562, 764.9681396484375, 710.9881591796875, 679.8927612304688, 638.013916015625, 1795.7987060546875, 1045.2650146484375, 835.3025512695312, 468.7890625, 383.2587585449219, 253.45205688476562, 221.36709594726562, 218.81076049804688, 214.56985473632812, 192.7279052734375, 182.2310028076172, 180.14678955078125, 178.606689453125, 143.8786163330078, 132.24685668945312, 120.48727416992188, 117.79759216308594, 107.60428619384766, 107.48783111572266, 107.19215393066406, 106.34519958496094, 92.49705505371094, 90.51400756835938, 89.06233978271484, 81.66410827636719, 81.57907104492188, 79.68222045898438, 79.33084869384766, 77.31212615966797, 75.13978576660156, 627.6901245117188, 1071.937744140625, 349.265869140625, 2665.675048828125, 276.3217468261719, 1716.4837646484375, 827.0155029296875, 719.4020385742188, 297.2580261230469, 461.56201171875, 548.42431640625, 442.9174499511719, 180.33396911621094, 1992.8023681640625, 203.3661651611328, 232.16265869140625, 741.20751953125, 996.2295532226562, 497.000244140625, 1153.0762939453125, 521.2808227539062, 412.39031982421875, 512.2560424804688, 327.056640625, 675.3732299804688, 392.6095886230469, 328.7641906738281, 461.6861572265625, 425.3428039550781, 376.3584289550781, 452.2938232421875, 1370.8924560546875, 1081.61181640625, 332.23638916015625, 313.7908630371094, 284.5426025390625, 266.2734375, 228.0170135498047, 210.1553192138672, 201.24246215820312, 143.64083862304688, 138.53341674804688, 126.1718978881836, 123.28134155273438, 114.07121276855469, 97.52664947509766, 78.5218734741211, 75.70281982421875, 73.06468963623047, 69.2771987915039, 68.58511352539062, 67.67196655273438, 66.68242645263672, 64.6935806274414, 60.25685119628906, 60.04051971435547, 48.799503326416016, 45.06838607788086, 41.57523727416992, 38.175453186035156, 36.923309326171875, 1886.23388671875, 1415.5177001953125, 928.5972290039062, 215.49942016601562, 516.5004272460938, 1174.7603759765625, 726.4277954101562, 171.4070281982422, 508.14227294921875, 308.1540832519531, 165.83242797851562, 697.9693603515625, 950.3805541992188, 389.4187316894531, 246.01882934570312, 1225.4693603515625, 1259.569580078125, 856.9769287109375, 1307.01513671875, 290.8604431152344, 434.5191955566406, 883.4994506835938, 568.9164428710938, 848.8170776367188, 744.6139526367188, 1202.1370849609375, 1158.45556640625, 1141.0152587890625, 672.9153442382812, 561.3271484375, 465.0547790527344, 656.572998046875, 501.6376647949219, 474.14654541015625, 467.3480529785156, 446.6920471191406, 638.4374389648438, 647.119873046875, 520.5813598632812, 258.6304016113281, 242.97128295898438, 177.95310974121094, 164.03269958496094, 150.15274047851562, 148.42681884765625, 138.81402587890625, 129.7282257080078, 126.77581787109375, 125.53831481933594, 125.28984832763672, 121.88849639892578, 114.42839050292969, 109.53382110595703, 98.47195434570312, 97.10942840576172, 89.46994018554688, 81.75826263427734, 73.54293823242188, 72.30657958984375, 67.99958038330078, 67.77084350585938, 64.74219512939453, 64.1906967163086, 63.26686096191406, 61.336605072021484, 58.722129821777344, 781.0945434570312, 594.6217041015625, 224.07965087890625, 293.3067932128906, 234.6305694580078, 261.4361572265625, 373.10565185546875, 291.14971923828125, 122.35306549072266, 143.45298767089844, 162.05465698242188, 163.1682586669922, 126.98204040527344, 115.34701538085938], "Term": ["great", "beach", "stay", "venice", "walk", "jana", "place", "location", "quiet", "monica", "restaurant", "bike", "clean", "shower", "neighborhood", "bathroom", "host", "private", "patrick", "everything", "little", "house", "apartment", "bed", "hot", "recommend", "space", "paulo", "pool", "comfortable", "ellen", "tracy", "conrad", "johnny", "kevin", "mark", "magical", "rebecca", "special", "amy", "art", "moment", "darrell", "conversation", "david", "feliz", "create", "dream", "dan", "world", "job", "opportunity", "story", "regret", "energy", "happen", "decoration", "exceed", "prior", "georgia", "home", "angele", "gorgeous", "los", "invite", "hospitality", "airbnb", "generous", "care", "feel", "experience", "first", "beautiful", "welcome", "make", "amazing", "unique", "time", "wonderful", "stay", "house", "thank", "warm", "host", "place", "love", "garden", "dog", "come", "enjoy", "good", "visit", "recommend", "could", "great", "would", "comfortable", "everything", "bit", "door", "issue", "mary", "late", "window", "noise", "castle", "hear", "fan", "key", "fine", "wifi", "luggage", "loud", "sauna", "due", "note", "machine", "noisy", "message", "response", "trouble", "board", "toiletry", "crash", "text", "bad", "send", "change", "light", "hour", "sleep", "early", "open", "arrive", "night", "leave", "get", "side", "find", "big", "small", "bathroom", "use", "bed", "room", "let", "problem", "work", "parking", "day", "little", "thing", "check", "space", "could", "need", "street", "nice", "make", "place", "time", "go", "would", "clean", "good", "patrick", "veronica", "colette", "garagement", "dtla", "wave", "tomoko", "organize", "universal", "aina", "jeremiah", "apt", "julie", "communicate", "communicator", "def", "pic", "position", "pedro", "checkin", "ice", "land", "appartment", "compact", "con", "fault", "assist", "behave", "pictured", "direct", "studio", "communication", "caroline", "apartment", "question", "responsive", "central", "martha", "answer", "value", "great", "location", "easy", "respond", "everything", "place", "clean", "check", "would", "stay", "recommend", "describe", "need", "host", "perfect", "helpful", "quick", "nice", "thank", "awesome", "comfortable", "good", "excellent", "time", "space", "parking", "love", "close", "amazing", "jana", "bike", "pool", "kinney", "megan", "abbot", "austin", "nika", "alix", "lisa", "joe", "pina", "boardwalk", "abbott", "cruiser", "borrow", "canal", "pong", "poolhouse", "ping", "wellington", "carthage", "cruise", "nightlife", "robot", "airy", "paula", "trendy", "dart", "ronan", "venice", "beach", "ride", "great", "close", "stay", "house", "location", "perfect", "place", "walk", "host", "friendly", "everything", "recommend", "use", "welcome", "make", "time", "good", "love", "would", "nice", "comfortable", "room", "area", "monica", "santa", "bungalow", "pier", "tony", "brian", "bus", "bicycle", "walking", "market", "grocery", "stuff", "dave", "claudia", "public", "adventure", "action", "metro", "station", "museum", "promenade", "quality", "organic", "topanga", "rid", "binder", "functional", "eatery", "supermarket", "term", "bar", "distance", "store", "walk", "shopping", "restaurant", "shop", "downtown", "cafe", "drive", "jeff", "food", "nearby", "beach", "stop", "min", "street", "close", "short", "venice", "minute", "block", "coffee", "julia", "area", "many", "car", "easy", "quiet", "neighborhood", "location", "private", "paulo", "thea", "marlene", "george", "yuki", "cat", "quaint", "cabin", "residential", "drop", "griffith", "homey", "solo", "seclude", "perk", "district", "todd", "additional", "entry", "roomy", "authentic", "freeway", "condo", "homeless", "fairy", "urban", "lyft", "gratitude", "serve", "quiet", "neighborhood", "cottage", "entrance", "dustin", "little", "cute", "peter", "safe", "adorable", "bonus", "cozy", "space", "sweet", "getaway", "comfortable", "nice", "bed", "clean", "peaceful", "garden", "perfect", "lovely", "house", "love", "great", "place", "stay", "room", "beautiful", "bathroom", "location", "easy", "friendly", "feel", "area", "water", "cabana", "tub", "carlo", "sound", "microwave", "garage", "wall", "toilet", "robe", "closet", "chair", "mini", "prime", "terrific", "ceiling", "pressure", "service", "netflix", "maker", "young", "keurig", "cake", "restroom", "lounge", "unbeatable", "oven", "ear", "challenge", "enchant", "shower", "hot", "table", "fridge", "vibe", "outdoor", "bathroom", "coffee", "bath", "towel", "small", "space", "bed", "kitchen"], "Total": [13903.0, 5924.0, 16881.0, 4562.0, 3641.0, 3116.0, 14502.0, 7322.0, 2312.0, 1796.0, 2298.0, 2024.0, 5618.0, 1119.0, 1792.0, 1944.0, 7199.0, 1371.0, 1811.0, 4791.0, 2547.0, 4588.0, 2087.0, 2728.0, 850.0, 4898.0, 2739.0, 1082.0, 1319.0, 4331.0, 1359.9920654296875, 1276.367431640625, 1091.3699951171875, 741.2218627929688, 656.203857421875, 613.801025390625, 363.6524353027344, 344.2019958496094, 332.2520446777344, 323.07012939453125, 285.5056457519531, 252.52328491210938, 235.71018981933594, 221.07183837890625, 216.49501037597656, 223.88259887695312, 188.95669555664062, 187.3639678955078, 184.2603759765625, 180.65989685058594, 168.34083557128906, 143.58334350585938, 128.53477478027344, 125.04821014404297, 118.4365234375, 115.7843017578125, 113.86953735351562, 113.30178833007812, 109.3128433227539, 107.88984680175781, 2927.138427734375, 555.4690551757812, 384.76861572265625, 771.47998046875, 213.69017028808594, 576.614990234375, 2093.176025390625, 222.10850524902344, 438.477783203125, 3957.807861328125, 3062.1298828125, 1209.3204345703125, 2796.102783203125, 2670.231689453125, 4784.65966796875, 2942.992919921875, 664.5097045898438, 4373.57080078125, 2597.734375, 16881.974609375, 4588.37939453125, 3472.3994140625, 906.5286865234375, 7199.40283203125, 14502.513671875, 3680.59912109375, 1136.71728515625, 1541.749267578125, 2252.615234375, 2524.897216796875, 4045.982177734375, 1621.337890625, 4898.658203125, 2713.654296875, 13903.0947265625, 6121.02294921875, 4331.9189453125, 4791.32275390625, 718.1035766601562, 543.0565795898438, 510.55487060546875, 508.0063171386719, 493.09088134765625, 473.8984069824219, 443.6871643066406, 340.30426025390625, 308.6667785644531, 273.4564514160156, 264.6458740234375, 242.88662719726562, 235.5118865966797, 223.90016174316406, 215.4833526611328, 226.25128173828125, 205.12564086914062, 204.77635192871094, 202.177734375, 194.22348022460938, 189.09796142578125, 188.9365997314453, 187.71839904785156, 186.95472717285156, 184.8759002685547, 174.71786499023438, 170.06373596191406, 166.54400634765625, 150.44935607910156, 149.4098663330078, 517.1043090820312, 374.80712890625, 1056.1702880859375, 355.6275329589844, 528.5310668945312, 1067.4786376953125, 3234.734130859375, 1104.5955810546875, 3468.1884765625, 254.826171875, 1657.7412109375, 794.419921875, 1388.1241455078125, 1944.18603515625, 1855.1536865234375, 2728.60302734375, 4223.2890625, 691.2308349609375, 530.26953125, 857.0458984375, 2324.874267578125, 1966.9190673828125, 2547.265625, 1187.1168212890625, 1742.873046875, 2739.014892578125, 2713.654296875, 3841.1875, 1814.4642333984375, 4836.96240234375, 4784.65966796875, 14502.513671875, 4373.57080078125, 1367.9423828125, 6121.02294921875, 5618.92529296875, 4045.982177734375, 1811.9840087890625, 564.6578369140625, 366.8219909667969, 286.6053466796875, 270.05279541015625, 232.9269256591797, 177.09913635253906, 131.0980224609375, 124.14302825927734, 105.06764221191406, 81.49515533447266, 81.83856201171875, 79.27993774414062, 409.3855285644531, 71.7032699584961, 64.74441528320312, 58.25371551513672, 56.391395568847656, 55.63575744628906, 52.81105422973633, 53.05742645263672, 49.134586334228516, 46.72314453125, 46.665775299072266, 42.29723358154297, 39.41342544555664, 38.59305953979492, 34.602718353271484, 32.80295181274414, 32.33578109741211, 685.6289672851562, 903.6251831054688, 392.67608642578125, 2087.021484375, 776.4180908203125, 697.4688110351562, 463.8925476074219, 167.69461059570312, 350.1422424316406, 371.3588562011719, 13903.0947265625, 7322.8671875, 3095.513916015625, 577.4470825195312, 4791.32275390625, 14502.513671875, 5618.92529296875, 1742.873046875, 6121.02294921875, 16881.974609375, 4898.658203125, 976.1937255859375, 3841.1875, 7199.40283203125, 4447.138671875, 2146.179443359375, 833.69140625, 4836.96240234375, 3472.3994140625, 1375.940185546875, 4331.9189453125, 4045.982177734375, 934.4751586914062, 4373.57080078125, 2739.014892578125, 2324.874267578125, 3680.59912109375, 2962.976318359375, 2942.992919921875, 3116.0185546875, 2024.4075927734375, 1319.432373046875, 853.3261108398438, 694.7626342773438, 609.3391723632812, 578.1279907226562, 539.1514282226562, 529.80908203125, 389.8038635253906, 357.1105651855469, 345.6575622558594, 312.30963134765625, 257.83935546875, 161.0882568359375, 153.74966430664062, 149.50721740722656, 110.84114837646484, 104.35546875, 101.38370513916016, 95.61709594726562, 68.01475524902344, 53.77181625366211, 53.295249938964844, 52.218223571777344, 51.094566345214844, 49.28022384643555, 44.76483154296875, 44.67058563232422, 43.95021438598633, 4562.1484375, 5924.52880859375, 584.7811889648438, 13903.0947265625, 2962.976318359375, 16881.974609375, 4588.37939453125, 7322.8671875, 4447.138671875, 14502.513671875, 3641.2890625, 7199.40283203125, 2453.763916015625, 4791.32275390625, 4898.658203125, 1855.1536865234375, 2670.231689453125, 4784.65966796875, 4373.57080078125, 4045.982177734375, 3680.59912109375, 6121.02294921875, 4836.96240234375, 4331.9189453125, 4223.2890625, 3172.72900390625, 1796.687255859375, 1046.153564453125, 836.19384765625, 469.6773376464844, 384.15032958984375, 254.357666015625, 222.2550811767578, 219.70303344726562, 215.4579620361328, 193.61614990234375, 183.1199493408203, 181.037841796875, 179.50233459472656, 144.76950073242188, 133.1349639892578, 121.37743377685547, 118.68701934814453, 108.49186706542969, 108.37582397460938, 108.08036041259766, 107.23392486572266, 93.38972473144531, 91.404541015625, 89.95162963867188, 82.55427551269531, 82.47245788574219, 80.57276153564453, 80.2197265625, 78.20109558105469, 76.03133392333984, 717.7892456054688, 1307.2000732421875, 393.7825622558594, 3641.2890625, 310.1629333496094, 2298.759521484375, 1047.985595703125, 956.3613891601562, 353.75152587890625, 590.7244262695312, 774.430908203125, 687.9011840820312, 216.43701171875, 5924.52880859375, 256.4761657714844, 315.4570007324219, 1814.4642333984375, 2962.976318359375, 1092.64013671875, 4562.1484375, 1219.058837890625, 834.5379028320312, 1451.533447265625, 613.6277465820312, 3172.72900390625, 1101.25244140625, 699.9458618164062, 3095.513916015625, 2312.310546875, 1792.6102294921875, 7322.8671875, 1371.7803955078125, 1082.5128173828125, 333.12921142578125, 314.68096923828125, 285.42999267578125, 267.17083740234375, 228.9051971435547, 211.04287719726562, 202.1300811767578, 144.52894592285156, 139.42698669433594, 127.06202697753906, 124.16937255859375, 114.960693359375, 98.41363525390625, 79.41697692871094, 76.59358215332031, 73.96780395507812, 70.16927337646484, 69.47509002685547, 68.56000518798828, 67.57315063476562, 65.58018493652344, 61.14576721191406, 60.937259674072266, 49.68706130981445, 45.957157135009766, 42.46638488769531, 39.07001876831055, 37.81084060668945, 2312.310546875, 1792.6102294921875, 1251.3951416015625, 265.9701843261719, 776.3816528320312, 2547.265625, 1389.6048583984375, 227.2729949951172, 927.2130737304688, 490.49005126953125, 227.23611450195312, 1765.619140625, 2739.014892578125, 788.5213623046875, 411.6782531738281, 4331.9189453125, 4836.96240234375, 2728.60302734375, 5618.92529296875, 553.0906372070312, 1136.71728515625, 4447.138671875, 2009.7222900390625, 4588.37939453125, 3680.59912109375, 13903.0947265625, 14502.513671875, 16881.974609375, 4223.2890625, 2796.102783203125, 1944.18603515625, 7322.8671875, 3095.513916015625, 2453.763916015625, 3957.807861328125, 3172.72900390625, 639.329345703125, 648.029052734375, 521.4745483398438, 259.5242919921875, 243.8635711669922, 178.844970703125, 164.92686462402344, 151.04437255859375, 149.3192596435547, 139.70680236816406, 130.6206817626953, 127.66777801513672, 126.43065643310547, 126.18294525146484, 122.78084564208984, 115.3208999633789, 110.42545318603516, 99.36400604248047, 98.00312042236328, 90.36259460449219, 82.65072631835938, 74.43773651123047, 73.20357513427734, 68.89218139648438, 68.66311645507812, 65.63487243652344, 65.0834732055664, 64.16023254394531, 62.229637145996094, 59.61384201049805, 1119.7891845703125, 850.4874267578125, 278.7093811035156, 414.4967346191406, 332.9844665527344, 701.3491821289062, 1944.18603515625, 1451.533447265625, 232.05416870117188, 544.2220458984375, 1388.1241455078125, 2739.014892578125, 2728.60302734375, 731.3555908203125], "loglift": [30.0, 29.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 1.4103000164031982, 1.4103000164031982, 1.4101999998092651, 1.4098000526428223, 1.4097000360488892, 1.409600019454956, 1.4085999727249146, 1.4084999561309814, 1.408400058746338, 1.4083000421524048, 1.4079999923706055, 1.4076000452041626, 1.4072999954223633, 1.407099962234497, 1.406999945640564, 1.4069000482559204, 1.4063999652862549, 1.4063999652862549, 1.4062999486923218, 1.4062000513076782, 1.405900001525879, 1.4049999713897705, 1.4042999744415283, 1.404099941253662, 1.4038000106811523, 1.403499960899353, 1.403499960899353, 1.40339994430542, 1.4031000137329102, 1.4031000137329102, 1.2127000093460083, 1.3055000305175781, 1.3113000392913818, 1.2475999593734741, 1.350600004196167, 1.25600004196167, 1.1146999597549438, 1.3430999517440796, 1.2589999437332153, 0.9722999930381775, 0.9861000180244446, 1.1098999977111816, 0.9715999960899353, 0.9749000072479248, 0.8526999950408936, 0.8845999836921692, 1.1540000438690186, 0.6723999977111816, 0.8007000088691711, 0.31200000643730164, 0.6304000020027161, 0.630299985408783, 1.0398999452590942, 0.3727000057697296, -0.014499999582767487, 0.4880000054836273, 0.9283000230789185, 0.7929999828338623, 0.5902000069618225, 0.5324000120162964, 0.2353000044822693, 0.7142000198364258, 0.020400000736117363, 0.3772999942302704, -0.70660001039505, -0.17720000445842743, -0.14020000398159027, -0.23680000007152557, 1.6365000009536743, 1.6361000537872314, 1.6360000371932983, 1.6360000371932983, 1.6359000205993652, 1.6359000205993652, 1.635699987411499, 1.63510000705719, 1.6348999738693237, 1.6345000267028809, 1.6344000101089478, 1.6340999603271484, 1.6339999437332153, 1.6338000297546387, 1.6335999965667725, 1.6335999965667725, 1.6333999633789062, 1.6333999633789062, 1.6332999467849731, 1.6332000494003296, 1.6330000162124634, 1.6330000162124634, 1.6330000162124634, 1.6328999996185303, 1.6328999996185303, 1.632599949836731, 1.6325000524520874, 1.6324000358581543, 1.6318000555038452, 1.6318000555038452, 1.5408999919891357, 1.5591000318527222, 1.4577000141143799, 1.526900053024292, 1.4668999910354614, 1.357699990272522, 1.169600009918213, 1.305799961090088, 1.0740000009536743, 1.575600028038025, 1.1632000207901, 1.315000057220459, 1.1704000234603882, 1.073199987411499, 1.069000005722046, 0.9190999865531921, 0.7760999798774719, 1.2965999841690063, 1.3777999877929688, 1.186400055885315, 0.7300000190734863, 0.7932999730110168, 0.6452999711036682, 0.933899998664856, 0.673799991607666, 0.3946000039577484, 0.39579999446868896, 0.15360000729560852, 0.6359000205993652, -0.29670000076293945, -0.3138999938964844, -1.25409996509552, -0.2863999903202057, 0.7282000184059143, -0.6611999869346619, -0.6158999800682068, -0.3059999942779541, 1.6931999921798706, 1.6920000314712524, 1.6912000179290771, 1.6904000043869019, 1.6902999877929688, 1.6898000240325928, 1.6885000467300415, 1.6866999864578247, 1.686400055885315, 1.684999942779541, 1.6825000047683716, 1.6825000047683716, 1.6821999549865723, 1.6816999912261963, 1.680899977684021, 1.6796000003814697, 1.677899956703186, 1.67739999294281, 1.6770999431610107, 1.6763999462127686, 1.6757999658584595, 1.6749999523162842, 1.6741000413894653, 1.673799991607666, 1.6719000339508057, 1.670300006866455, 1.669800043106079, 1.6668000221252441, 1.6655999422073364, 1.6648999452590942, 1.6467000246047974, 1.6201000213623047, 1.6283999681472778, 1.5508999824523926, 1.56659996509552, 1.5547000169754028, 1.5604000091552734, 1.5976999998092651, 1.5329999923706055, 1.5077999830245972, 1.1377999782562256, 1.1971999406814575, 1.2347999811172485, 1.396299958229065, 1.1030000448226929, 0.9028000235557556, 1.0378999710083008, 1.2127000093460083, 1.0053000450134277, 0.7728000283241272, 0.9876000285148621, 1.2553000450134277, 0.9498999714851379, 0.7692999839782715, 0.70660001039505, 0.9433000087738037, 1.2451000213623047, 0.5102999806404114, 0.6007999777793884, 0.9987000226974487, 0.42170000076293945, 0.32739999890327454, 1.089400053024292, 0.01810000091791153, 0.34209999442100525, 0.45489999651908875, 0.05000000074505806, 0.20170000195503235, 0.17440000176429749, 1.9169000387191772, 1.916700005531311, 1.9164999723434448, 1.916100025177002, 1.9157999753952026, 1.9156999588012695, 1.9155999422073364, 1.9155000448226929, 1.9154000282287598, 1.9148000478744507, 1.9146000146865845, 1.9144999980926514, 1.914199948310852, 1.913599967956543, 1.9113999605178833, 1.9111000299453735, 1.9108999967575073, 1.9085999727249146, 1.9082000255584717, 1.9077999591827393, 1.9072999954223633, 1.90339994430542, 1.8996000289916992, 1.899399995803833, 1.8990999460220337, 1.8986999988555908, 1.8980000019073486, 1.8960000276565552, 1.895900011062622, 1.8956999778747559, 1.625599980354309, 1.5069999694824219, 1.651900053024292, 0.40139999985694885, 0.8155999779701233, 0.2766000032424927, 0.6412000060081482, 0.4893999993801117, 0.6141999959945679, 0.14990000426769257, 0.599399983882904, 0.3043999969959259, 0.6704000234603882, 0.39329999685287476, 0.33059999346733093, 0.7732999920845032, 0.578000009059906, 0.22439999878406525, 0.2506999969482422, 0.290800005197525, 0.34200000762939453, -0.028599999845027924, 0.0729999989271164, 0.11010000109672546, 0.09080000221729279, 0.3131999969482422, 2.286400079727173, 2.2860000133514404, 2.285799980163574, 2.2850000858306885, 2.284600019454956, 2.2832999229431152, 2.282900094985962, 2.2827999591827393, 2.2827999591827393, 2.2822999954223633, 2.2820000648498535, 2.2820000648498535, 2.281899929046631, 2.2806999683380127, 2.2802000045776367, 2.2795000076293945, 2.279400110244751, 2.278700113296509, 2.278700113296509, 2.278599977493286, 2.278599977493286, 2.2772998809814453, 2.277100086212158, 2.2769999504089355, 2.276099920272827, 2.2760000228881836, 2.2757999897003174, 2.2757999897003174, 2.2755000591278076, 2.275099992752075, 2.1528000831604004, 2.0885000228881836, 2.1668999195098877, 1.975000023841858, 2.1714000701904297, 1.9947999715805054, 2.050100088119507, 2.00219988822937, 2.1129000186920166, 2.0401999950408936, 1.9417999982833862, 1.84660005569458, 2.1043999195098877, 1.1972999572753906, 2.0548999309539795, 1.980299949645996, 1.3916000127792358, 1.1969000101089478, 1.4990999698638916, 0.9114999771118164, 1.437399983406067, 1.5820000171661377, 1.245300054550171, 1.6576000452041626, 0.739799976348877, 1.2554999589920044, 1.5312000513076782, 0.3840999901294708, 0.5938000082969666, 0.7260000109672546, -0.4975000023841858, 2.3420000076293945, 2.3417999744415283, 2.3399999141693115, 2.3397998809814453, 2.339600086212158, 2.3392999172210693, 2.3387999534606934, 2.3385000228881836, 2.3382999897003174, 2.3364999294281006, 2.3362998962402344, 2.335700035095215, 2.3355000019073486, 2.33489990234375, 2.3336000442504883, 2.3313000202178955, 2.3310000896453857, 2.330399990081787, 2.329900026321411, 2.3297998905181885, 2.3296000957489014, 2.329400062561035, 2.3290998935699463, 2.328000068664551, 2.327899932861328, 2.324700117111206, 2.323199987411499, 2.321500062942505, 2.319499969482422, 2.3189001083374023, 2.1389999389648438, 2.1064999103546143, 2.044300079345703, 2.1322999000549316, 1.9350999593734741, 1.5686999559402466, 1.694000005722046, 2.0606000423431396, 1.7412999868392944, 1.8779000043869019, 2.0276999473571777, 1.4146000146865845, 1.2841999530792236, 1.6371999979019165, 1.8278000354766846, 1.0800000429153442, 0.9972000122070312, 1.184499979019165, 0.8842999935150146, 1.7000000476837158, 1.38100004196167, 0.7265999913215637, 1.0807000398635864, 0.6552000045776367, 0.744700014591217, -0.10530000180006027, -0.18459999561309814, -0.3515999913215637, 0.5059000253677368, 0.7369999885559082, 0.9121999740600586, -0.0689999982714653, 0.5228000283241272, 0.6988000273704529, 0.20630000531673431, 0.3822000026702881, 3.4047999382019043, 3.4047999382019043, 3.4045000076293945, 3.4028000831604004, 3.402600049972534, 3.40120005607605, 3.4007999897003174, 3.4003000259399414, 3.4001998901367188, 3.3998000621795654, 3.399399995803833, 3.399199962615967, 3.3991000652313232, 3.3991000652313232, 3.398900032043457, 3.3984999656677246, 3.398099899291992, 3.397200107574463, 3.3970999717712402, 3.3963000774383545, 3.395400047302246, 3.3940999507904053, 3.393899917602539, 3.393199920654297, 3.3931000232696533, 3.3924999237060547, 3.392400026321411, 3.392199993133545, 3.3917999267578125, 3.3910999298095703, 3.0460000038146973, 3.04830002784729, 3.1881000995635986, 3.0604000091552734, 3.0560998916625977, 2.4193999767303467, 1.7554999589920044, 1.7997000217437744, 2.766200065612793, 2.0729000568389893, 1.2583999633789062, 0.5856000185012817, 0.33869999647140503, 1.5592999458312988], "logprob": [30.0, 29.0, 28.0, 27.0, 26.0, 25.0, 24.0, 23.0, 22.0, 21.0, 20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, -4.615699768066406, -4.679200172424316, -4.835899829864502, -5.223199844360352, -5.345200061798096, -5.412099838256836, -5.936500072479248, -5.991600036621094, -6.0269999504089355, -6.055200099945068, -6.179100036621094, -6.302199840545654, -6.371399879455566, -6.435699939727783, -6.456699848175049, -6.423299789428711, -6.593400001525879, -6.601900100708008, -6.618599891662598, -6.638500213623047, -6.709499835968018, -6.8694000244140625, -6.980800151824951, -7.008500099182129, -7.063199996948242, -7.085999965667725, -7.102799892425537, -7.107800006866455, -7.144000053405762, -7.157199859619141, -4.046800136566162, -5.616000175476074, -5.977399826049805, -5.345399856567383, -6.526199817657471, -5.6280999183654785, -4.480100154876709, -6.495100021362305, -5.89900016784668, -3.985599994659424, -4.228300094604492, -5.033599853515625, -4.333700180053711, -4.376500129699707, -3.9154000282287598, -4.36959981918335, -5.588200092315674, -4.1855998039245605, -4.578199863433838, -3.1953001022338867, -4.179599761962891, -4.458399772644043, -5.3917999267578125, -3.986799955368042, -3.673799991607666, -4.542500019073486, -5.277100086212158, -5.107600212097168, -4.93120002746582, -4.875, -4.7006001472473145, -5.136099815368652, -4.7241997718811035, -4.958000183105469, -4.4079999923706055, -4.698999881744385, -5.007800102233887, -5.003499984741211, -5.028200149536133, -5.308000087738037, -5.369800090789795, -5.374800205230713, -5.404699802398682, -5.444499969482422, -5.510499954223633, -5.776400089263916, -5.874199867248535, -5.995699882507324, -6.028500080108643, -6.11460018157959, -6.145599842071533, -6.196400165557861, -6.234799861907959, -6.186100006103516, -6.284299850463867, -6.285999774932861, -6.298900127410889, -6.339200019836426, -6.366000175476074, -6.3668999671936035, -6.3734002113342285, -6.377500057220459, -6.388700008392334, -6.445499897003174, -6.472700119018555, -6.49370002746582, -6.595900058746338, -6.60290002822876, -5.452199935913086, -5.755799770355225, -4.821199893951416, -5.84060001373291, -5.50439977645874, -4.9105000495910645, -3.990000009536743, -4.928299903869629, -4.015999794006348, -6.125199794769287, -4.664899826049805, -5.248700141906738, -4.83519983291626, -4.595600128173828, -4.646599769592285, -4.410600185394287, -4.1168999671936035, -5.406300067901611, -5.590099811553955, -5.301400184631348, -4.759900093078613, -4.863800048828125, -4.753200054168701, -5.2281999588012695, -5.1041998863220215, -4.931300163269043, -4.939499855041504, -4.834199905395508, -5.101900100708008, -5.053999900817871, -5.082099914550781, -4.913300037384033, -5.144400119781494, -5.292099952697754, -5.183000087738037, -5.223299980163574, -5.241799831390381, -4.046000003814697, -5.213099956512451, -5.645199775695801, -5.8927998542785645, -5.952400207519531, -6.100800037384033, -6.376100063323975, -6.678599834442139, -6.733500003814697, -6.901700019836426, -7.158299922943115, -7.154099941253662, -7.186100006103516, -5.545000076293945, -7.287799835205078, -7.391300201416016, -7.498600006103516, -7.531599998474121, -7.545400142669678, -7.598199844360352, -7.594099998474121, -7.671800136566162, -7.7230000495910645, -7.7245001792907715, -7.8246002197265625, -7.896900177001953, -7.918399810791016, -8.030599594116211, -8.085200309753418, -8.100199699401855, -5.064300060272217, -4.814799785614014, -5.639999866485596, -4.046899795532227, -5.019999980926514, -5.139200210571289, -5.541299819946289, -6.521500110626221, -5.849999904632568, -5.816400051116943, -2.563699960708618, -3.1452999114990234, -3.9688000679016113, -5.486400127410889, -3.6637001037597656, -2.756500005722046, -3.5696001052856445, -4.565299987792969, -3.5165998935699463, -2.734600067138672, -3.756999969482422, -5.102399826049805, -4.037899971008301, -3.5901999473571777, -4.134699821472168, -4.6265997886657715, -5.270400047302246, -4.247000217437744, -4.4878997802734375, -5.015699863433838, -4.445799827575684, -4.608399868011475, -5.3119001388549805, -4.839900016784668, -4.983799934387207, -5.034999847412109, -4.980400085449219, -5.0457000732421875, -5.079699993133545, -3.280100107192993, -3.7116000652313232, -4.139900207519531, -4.576099872589111, -4.781899929046631, -4.913300037384033, -4.966000080108643, -5.035900115966797, -5.053400039672852, -5.360899925231934, -5.448699951171875, -5.481400012969971, -5.583099842071533, -5.775400161743164, -6.248000144958496, -6.294899940490723, -6.3231000900268555, -6.624599933624268, -6.685299873352051, -6.714600086212158, -6.773600101470947, -7.118199825286865, -7.356900215148926, -7.366099834442139, -7.3867998123168945, -7.408999919891357, -7.445799827575684, -7.543900012969971, -7.54610013961792, -7.562600135803223, -3.190200090408325, -3.047499895095825, -5.218200206756592, -3.300100088119507, -4.431700229644775, -3.2307000160217285, -4.168900012969971, -3.8531999588012695, -4.227099895477295, -3.5092999935150146, -4.44189977645874, -4.055200099945068, -4.765600204467773, -4.373499870300293, -4.414000034332275, -4.942299842834473, -4.773399829864502, -4.543700218200684, -4.6072998046875, -4.644999980926514, -4.688499927520752, -4.5503997802734375, -4.684299945831299, -4.757500171661377, -4.802199840545654, -4.865799903869629, -3.461199998855591, -4.002399921417236, -4.226600170135498, -4.804299831390381, -5.00570011138916, -5.4191999435424805, -5.554599761962891, -5.566199779510498, -5.5858001708984375, -5.6930999755859375, -5.749100208282471, -5.760700225830078, -5.769199848175049, -5.985499858856201, -6.069799900054932, -6.162899971008301, -6.185500144958496, -6.276000022888184, -6.2769999504089355, -6.279799938201904, -6.287700176239014, -6.427199840545654, -6.44890022277832, -6.465099811553955, -6.551799774169922, -6.552800178527832, -6.576399803161621, -6.5808000564575195, -6.606599807739258, -6.6350998878479, -4.512400150299072, -3.9772000312805176, -5.098599910736084, -3.066200017929077, -5.332900047302246, -3.5064001083374023, -4.236599922180176, -4.375999927520752, -5.259799957275391, -4.819799900054932, -4.64739990234375, -4.861000061035156, -5.7596001625061035, -3.357100009918213, -5.639400005340576, -5.506999969482422, -4.346099853515625, -4.0503997802734375, -4.745800018310547, -3.9042000770568848, -4.6981000900268555, -4.932499885559082, -4.71560001373291, -5.164299964904785, -4.439199924468994, -4.981599807739258, -5.15910005569458, -4.819499969482422, -4.901500225067139, -5.023900032043457, -4.840099811553955, -3.6754000186920166, -3.912400007247925, -5.092800140380859, -5.149899959564209, -5.247799873352051, -5.3140997886657715, -5.469200134277344, -5.55079984664917, -5.594099998474121, -5.931300163269043, -5.96750020980835, -6.060999870300293, -6.084199905395508, -6.161799907684326, -6.31850004196167, -6.535299777984619, -6.571800231933594, -6.6072998046875, -6.6605000495910645, -6.670599937438965, -6.684000015258789, -6.698699951171875, -6.729000091552734, -6.800000190734863, -6.803599834442139, -7.010900020599365, -7.0904998779296875, -7.17110013961792, -7.256400108337402, -7.28980016708374, -3.356300115585327, -3.643399953842163, -4.065000057220459, -5.525700092315674, -4.651599884033203, -3.8297998905181885, -4.310500144958496, -5.7546000480651855, -4.667900085449219, -5.168000221252441, -5.787700176239014, -4.350500106811523, -4.041800022125244, -4.934000015258789, -5.393199920654297, -3.787600040435791, -3.7600998878479004, -4.145199775695801, -3.723099946975708, -5.225800037384033, -4.824399948120117, -4.114699840545654, -4.554900169372559, -4.154799938201904, -4.285799980163574, -3.80679988861084, -3.8438000679016113, -3.8589999675750732, -4.38700008392334, -4.568299770355225, -4.756499767303467, -4.411600112915039, -4.680799961090088, -4.737100124359131, -4.7515997886657715, -4.796800136566162, -3.3761000633239746, -3.362600088119507, -3.580199956893921, -4.279699802398682, -4.342199802398682, -4.653600215911865, -4.735000133514404, -4.823400020599365, -4.835000038146973, -4.9019999504089355, -4.969699859619141, -4.992700099945068, -5.002500057220459, -5.004499912261963, -5.0320000648498535, -5.095200061798096, -5.138899803161621, -5.245299816131592, -5.259300231933594, -5.34119987487793, -5.431300163269043, -5.537199974060059, -5.554200172424316, -5.615600109100342, -5.61899995803833, -5.664700031280518, -5.6732001304626465, -5.687699794769287, -5.718699932098389, -5.76230001449585, -3.1744000911712646, -3.447200059890747, -4.423099994659424, -4.153900146484375, -4.377099990844727, -4.268899917602539, -3.9131999015808105, -4.161300182342529, -5.028200149536133, -4.869100093841553, -4.747200012207031, -4.740300178527832, -4.991099834442139, -5.087200164794922]}, "token.table": {"Topic": [4, 4, 5, 6, 1, 4, 6, 5, 3, 1, 2, 3, 4, 4, 1, 3, 4, 1, 1, 6, 2, 3, 3, 5, 3, 3, 1, 2, 3, 4, 5, 6, 1, 2, 1, 3, 4, 6, 1, 3, 4, 2, 4, 5, 2, 6, 7, 2, 6, 7, 4, 5, 1, 3, 6, 2, 4, 6, 7, 3, 5, 1, 2, 3, 5, 4, 5, 2, 2, 4, 5, 2, 4, 2, 6, 4, 5, 5, 5, 7, 6, 4, 5, 7, 4, 2, 5, 6, 1, 4, 5, 7, 2, 3, 4, 2, 6, 7, 3, 6, 7, 7, 2, 2, 3, 3, 5, 1, 2, 3, 4, 6, 3, 4, 5, 6, 7, 1, 2, 4, 5, 6, 7, 3, 1, 2, 3, 4, 6, 1, 2, 3, 4, 6, 2, 3, 2, 3, 3, 3, 3, 6, 1, 1, 5, 6, 1, 2, 3, 4, 1, 3, 4, 6, 2, 1, 4, 4, 2, 3, 4, 6, 1, 1, 4, 5, 1, 1, 2, 4, 5, 6, 1, 3, 1, 2, 3, 4, 3, 4, 5, 6, 1, 2, 4, 6, 2, 2, 5, 1, 2, 5, 6, 3, 2, 3, 6, 7, 2, 3, 4, 2, 3, 4, 5, 6, 5, 1, 7, 1, 1, 2, 3, 4, 6, 2, 6, 6, 1, 2, 3, 4, 6, 1, 1, 3, 4, 5, 1, 2, 3, 4, 6, 2, 3, 1, 2, 4, 6, 1, 1, 2, 3, 5, 2, 1, 2, 2, 4, 5, 6, 2, 7, 1, 3, 4, 6, 5, 7, 3, 1, 6, 1, 4, 6, 1, 1, 2, 3, 4, 5, 1, 6, 1, 2, 3, 4, 1, 2, 3, 4, 5, 6, 1, 6, 6, 1, 3, 4, 6, 6, 5, 1, 2, 1, 3, 4, 6, 1, 4, 6, 6, 6, 1, 4, 1, 3, 4, 6, 2, 7, 1, 2, 1, 2, 4, 6, 3, 1, 4, 2, 4, 3, 5, 3, 1, 4, 1, 5, 6, 3, 7, 1, 2, 4, 2, 6, 7, 3, 2, 1, 2, 5, 1, 2, 4, 2, 5, 4, 2, 3, 4, 6, 3, 4, 5, 6, 1, 6, 2, 7, 1, 3, 4, 6, 1, 3, 4, 6, 2, 6, 2, 1, 1, 2, 3, 4, 7, 1, 2, 3, 4, 5, 6, 1, 5, 6, 1, 3, 2, 4, 2, 5, 7, 2, 4, 5, 7, 2, 4, 5, 1, 5, 5, 4, 5, 6, 1, 2, 3, 4, 6, 5, 6, 7, 1, 2, 3, 4, 6, 1, 2, 3, 4, 6, 4, 4, 2, 2, 2, 1, 2, 1, 5, 3, 2, 4, 6, 7, 7, 2, 3, 5, 6, 3, 4, 6, 1, 6, 3, 1, 3, 4, 5, 6, 6, 1, 6, 3, 3, 5, 4, 4, 1, 2, 3, 4, 6, 4, 4, 4, 3, 7, 7, 1, 6, 2, 3, 5, 5, 5, 6, 5, 2, 3, 2, 3, 4, 5, 5, 6, 1, 1, 3, 4, 6, 1, 6, 2, 3, 2, 2, 3, 4, 5, 7, 5, 4, 5, 7, 4, 4, 1, 2, 3, 4, 6, 6, 1, 2, 3, 5, 6, 5, 2, 6, 2, 6, 7, 4, 5, 4, 5, 2, 3, 4, 5, 6, 2, 7, 2, 6, 2, 6, 2, 6, 7, 6, 7, 1, 2, 3, 6, 7, 1, 5, 1, 2, 3, 4, 6, 1, 5, 2, 5, 1, 2, 5, 6, 3, 7, 5, 5, 1, 4, 6, 2, 7, 5, 7, 2, 1, 3, 4, 6, 6, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 2, 3, 5, 5, 2, 7, 1, 4, 2, 7, 7, 1, 3, 6, 3, 6, 1, 2, 4, 2, 3, 4, 5, 3, 5, 7, 1, 3, 4, 5, 6, 4, 5, 5, 7, 1, 2, 4, 7, 3, 1, 4, 6, 4, 2, 2, 1, 3, 4, 6, 1, 2, 3, 6, 1, 1, 2, 3, 4, 6, 7, 6], "Freq": [0.9978022575378418, 0.9967446327209473, 0.9942114949226379, 0.9833363890647888, 0.14883074164390564, 0.2201879471540451, 0.6279433965682983, 0.9886516332626343, 0.9898385405540466, 0.7438457012176514, 0.1863197386264801, 0.06975046545267105, 0.9785776138305664, 0.9984728693962097, 0.5908950567245483, 0.2188248485326767, 0.19028247892856598, 0.996687650680542, 0.9001401662826538, 0.09901541471481323, 0.14565509557724, 0.8510826826095581, 0.8667855262756348, 0.13272503018379211, 0.9845227599143982, 0.9897534847259521, 0.11220624297857285, 0.15601710975170135, 0.17681938409805298, 0.20108871161937714, 0.2127505987882614, 0.14088816940784454, 0.24356459081172943, 0.7559870481491089, 0.9982289671897888, 0.9846330285072327, 0.9980489015579224, 0.9915180802345276, 0.253644734621048, 0.4992949664592743, 0.2471037656068802, 0.996733546257019, 0.12399182468652725, 0.8749086260795593, 0.21977627277374268, 0.2499416470527649, 0.525739312171936, 0.568361222743988, 0.23917464911937714, 0.1918540745973587, 0.6635127067565918, 0.33639806509017944, 0.6444684267044067, 0.15450075268745422, 0.20063640177249908, 0.4874289035797119, 0.15172599256038666, 0.3140801191329956, 0.04654396325349808, 0.9825817346572876, 0.9968000650405884, 0.17497043311595917, 0.7237985730171204, 0.07678558677434921, 0.0239168219268322, 0.9993047118186951, 0.9942713379859924, 0.9984632134437561, 0.14379215240478516, 0.36067864298820496, 0.49368637800216675, 0.9948932528495789, 0.9958066344261169, 0.2684432566165924, 0.7305176854133606, 0.995124101638794, 0.9946624040603638, 0.9985722899436951, 0.9943529963493347, 0.998412013053894, 0.9944091439247131, 0.15830320119857788, 0.8395723700523376, 0.9835585355758667, 0.9966074228286743, 0.4986099898815155, 0.4700363576412201, 0.03143100067973137, 0.8597927093505859, 0.07526037096977234, 0.06385727971792221, 0.9979798197746277, 0.06111907586455345, 0.9371591806411743, 0.985080361366272, 0.9961673617362976, 0.9960455298423767, 0.9885458946228027, 0.8752026557922363, 0.12287328392267227, 0.9947693943977356, 0.9802403450012207, 0.9972567558288574, 0.38155388832092285, 0.6179451942443848, 0.9846423268318176, 0.994684636592865, 0.04876377433538437, 0.10500228404998779, 0.5189604759216309, 0.0945020541548729, 0.23260675370693207, 0.22477398812770844, 0.3324359953403473, 0.3361484706401825, 0.10631202161312103, 0.9952481985092163, 0.1928994506597519, 0.10816147923469543, 0.08198226243257523, 0.3527304232120514, 0.06338124722242355, 0.20047764480113983, 0.9977591633796692, 0.43993309140205383, 0.16514138877391815, 0.1740199476480484, 0.15004782378673553, 0.07014069706201553, 0.21191532909870148, 0.06071212515234947, 0.280245304107666, 0.16413049399852753, 0.2827846109867096, 0.009770740754902363, 0.9868448376655579, 0.06971917301416397, 0.9295889735221863, 0.9901919364929199, 0.9857330918312073, 0.9693305492401123, 0.9812617301940918, 0.9996609687805176, 0.9951516389846802, 0.2573128044605255, 0.7423714399337769, 0.3556090295314789, 0.28890931606292725, 0.13745303452014923, 0.217787504196167, 0.16764657199382782, 0.2775230407714844, 0.1597173511981964, 0.3953287601470947, 0.995891273021698, 0.9949369430541992, 0.9856464266777039, 0.9932443499565125, 0.08635548502206802, 0.17343059182167053, 0.21660834550857544, 0.5224506855010986, 0.993159830570221, 0.9969870448112488, 0.9849882125854492, 0.9972015023231506, 0.9977135062217712, 0.30504560470581055, 0.4296058714389801, 0.2048889547586441, 0.05134934186935425, 0.008642958477139473, 0.9923637509346008, 0.9885022640228271, 0.13009712100028992, 0.13829222321510315, 0.6453636884689331, 0.08707287907600403, 0.9586902856826782, 0.17900855839252472, 0.8200733661651611, 0.9922502636909485, 0.5389981269836426, 0.007783366832882166, 0.20820505917072296, 0.2451760470867157, 0.9980543851852417, 0.24676863849163055, 0.7518078684806824, 0.9980574250221252, 0.21668310463428497, 0.7820905447006226, 0.9969375729560852, 0.9961014986038208, 0.9945124387741089, 0.3335988223552704, 0.6659095883369446, 0.9819166660308838, 0.8941940069198608, 0.0731102004647255, 0.03093123808503151, 0.002584384987130761, 0.6318821310997009, 0.05394903942942619, 0.14924824237823486, 0.1621701568365097, 0.9847951531410217, 0.9992705583572388, 0.9897029995918274, 0.996314287185669, 0.415462464094162, 0.013861950486898422, 0.17901718616485596, 0.21822670102119446, 0.17347240447998047, 0.18799099326133728, 0.808361291885376, 0.9931617379188538, 0.19243119657039642, 0.02233203686773777, 0.5539180040359497, 0.21789389848709106, 0.013357480056583881, 0.9885104298591614, 0.163728266954422, 0.5468310117721558, 0.18085017800331116, 0.10808206349611282, 0.6537932753562927, 0.0963381752371788, 0.16263189911842346, 0.08686763793230057, 0.9861721992492676, 0.99833083152771, 0.9895105361938477, 0.6448013782501221, 0.11799461394548416, 0.11900527030229568, 0.11799461394548416, 0.9960577487945557, 0.08626195788383484, 0.6219305992126465, 0.15382376313209534, 0.13753654062747955, 0.9963496327400208, 0.7400850653648376, 0.25964996218681335, 0.12211056053638458, 0.23259153962135315, 0.6439878344535828, 0.9911530613899231, 0.2895077168941498, 0.7068813443183899, 0.3182865381240845, 0.20091582834720612, 0.28731369972229004, 0.1931726187467575, 0.9928913712501526, 0.9943801760673523, 0.9978878498077393, 0.617567777633667, 0.38268089294433594, 0.9364792108535767, 0.06303225457668304, 0.9984935522079468, 0.9917522668838501, 0.1804976910352707, 0.5691732168197632, 0.11475731432437897, 0.08823049813508987, 0.04728693515062332, 0.4007984399795532, 0.5975540280342102, 0.34211966395378113, 0.402794748544693, 0.10307451337575912, 0.1513221561908722, 0.3087013065814972, 0.1431049257516861, 0.2550678551197052, 0.19673839211463928, 0.07637206465005875, 0.020019860938191414, 0.9044396877288818, 0.09356272220611572, 0.9726127982139587, 0.12033291906118393, 0.5735413432121277, 0.2195913940668106, 0.0864555686712265, 0.991641640663147, 0.9938840866088867, 0.993226170539856, 0.9978398084640503, 0.21619813144207, 0.4720015525817871, 0.2683838903903961, 0.042866870760917664, 0.8202550411224365, 0.09224025905132294, 0.08745742589235306, 0.9846192598342896, 0.9905824661254883, 0.8567241430282593, 0.1422092765569687, 0.3540571331977844, 0.3968384563922882, 0.19932208955287933, 0.049726348370313644, 0.29982805252075195, 0.6995988488197327, 0.0747050866484642, 0.9231414794921875, 0.45811381936073303, 0.0775873064994812, 0.2791835367679596, 0.1850326508283615, 0.980070173740387, 0.9406141638755798, 0.05615606904029846, 0.9989132285118103, 0.9996731281280518, 0.29053592681884766, 0.70761638879776, 0.9939241409301758, 0.9920349717140198, 0.996890127658844, 0.9983515739440918, 0.5328963994979858, 0.46608060598373413, 0.9838554859161377, 0.99411940574646, 0.9981654286384583, 0.9975594878196716, 0.9984459280967712, 0.6084591746330261, 0.23244506120681763, 0.15724225342273712, 0.9769086241722107, 0.9977876543998718, 0.2471492737531662, 0.7179098129272461, 0.034401729702949524, 0.13454261422157288, 0.7103270888328552, 0.15479633212089539, 0.906973659992218, 0.09089075028896332, 0.997937798500061, 0.37059345841407776, 0.06791596114635468, 0.100107342004776, 0.4612789452075958, 0.6086413860321045, 0.23979678750038147, 0.0617244578897953, 0.08971895277500153, 0.8490175008773804, 0.1503603458404541, 0.9977568984031677, 0.9903424382209778, 0.39721792936325073, 0.1931750774383545, 0.2070315182209015, 0.2024126946926117, 0.3617415130138397, 0.14678645133972168, 0.20848651230335236, 0.2831237018108368, 0.9959796071052551, 0.9890175461769104, 0.9941747784614563, 0.9982059001922607, 0.5722454786300659, 0.1421208679676056, 0.1015746220946312, 0.18392112851142883, 0.9849207997322083, 0.3232682943344116, 0.11441518366336823, 0.0463109090924263, 0.10715072602033615, 0.35686641931533813, 0.051759250462055206, 0.9986949563026428, 0.9968176484107971, 0.9978359937667847, 0.08944831043481827, 0.9064095616340637, 0.9980190992355347, 0.9989023208618164, 0.9941936731338501, 0.9954663515090942, 0.9952753782272339, 0.019020024687051773, 0.2409203201532364, 0.7354409694671631, 0.996593713760376, 0.26167726516723633, 0.3100752830505371, 0.42737889289855957, 0.9979277849197388, 0.9996175169944763, 0.9900041222572327, 0.0646839439868927, 0.8316507339477539, 0.10164619982242584, 0.12912672758102417, 0.22675278782844543, 0.4753738343715668, 0.15828438103199005, 0.010673782788217068, 0.2097499966621399, 0.7899096012115479, 0.989764392375946, 0.1306605190038681, 0.14451217651367188, 0.30618390440940857, 0.1581571102142334, 0.26049405336380005, 0.1731208711862564, 0.6263265609741211, 0.08068669587373734, 0.10387252271175385, 0.016075510531663895, 0.9756966829299927, 0.9978643655776978, 0.9984512329101562, 0.9937006831169128, 0.9962087869644165, 0.155146986246109, 0.8438482284545898, 0.9959372282028198, 0.9955741763114929, 0.9916244149208069, 0.0099807633087039, 0.37071406841278076, 0.24666742980480194, 0.3721398711204529, 0.983352541923523, 0.403462678194046, 0.28990814089775085, 0.12215714156627655, 0.18452610075473785, 0.9994569420814514, 0.9740215539932251, 0.9995262622833252, 0.47370174527168274, 0.5261343717575073, 0.9885728359222412, 0.10073893517255783, 0.37259912490844727, 0.2716353237628937, 0.05621592327952385, 0.1985546350479126, 0.9947495460510254, 0.24199971556663513, 0.7523990869522095, 0.9784783720970154, 0.975521981716156, 0.9985578656196594, 0.9980976581573486, 0.9863517880439758, 0.24037212133407593, 0.05550761893391609, 0.4534386396408081, 0.17079797387123108, 0.07984822988510132, 0.9924112558364868, 0.9989144206047058, 0.9870110154151917, 0.9753261208534241, 0.9961471557617188, 0.9906251430511475, 0.9879900217056274, 0.9994311332702637, 0.7713058590888977, 0.13012251257896423, 0.09806333482265472, 0.9884931445121765, 0.9914751052856445, 0.9950584769248962, 0.985119104385376, 0.11849285662174225, 0.8809686303138733, 0.16193042695522308, 0.6381257772445679, 0.12714536488056183, 0.07196907699108124, 0.18379883468151093, 0.8156343698501587, 0.9965078830718994, 0.24884365499019623, 0.49360454082489014, 0.20454581081867218, 0.052871622145175934, 0.9916175603866577, 0.9963402152061462, 0.25630053877830505, 0.742925226688385, 0.9950428009033203, 0.1290380209684372, 0.8702898025512695, 0.25274500250816345, 0.7464895844459534, 0.9870495796203613, 0.9932859539985657, 0.7660984992980957, 0.23256562650203705, 0.9949408173561096, 0.976670503616333, 0.9783797264099121, 0.19250398874282837, 0.42241957783699036, 0.0646415650844574, 0.1610119491815567, 0.15935447812080383, 0.99183189868927, 0.04853253439068794, 0.12402758747339249, 0.09059406071901321, 0.1887376308441162, 0.5478783845901489, 0.9988973140716553, 0.9944695234298706, 0.9957969784736633, 0.9970132112503052, 0.9785553216934204, 0.9862726330757141, 0.2099265456199646, 0.7891330122947693, 0.10639569163322449, 0.889854907989502, 0.028371647000312805, 0.14551909267902374, 0.33954453468322754, 0.4548615515232086, 0.031117290258407593, 0.3018425405025482, 0.69745272397995, 0.9378942251205444, 0.05886365473270416, 0.8350926041603088, 0.16379934549331665, 0.6267451047897339, 0.2564612030982971, 0.11670426279306412, 0.9916433095932007, 0.9964587688446045, 0.046001940965652466, 0.28842487931251526, 0.25885218381881714, 0.3468400239944458, 0.05951044708490372, 0.9962316155433655, 0.9873050451278687, 0.33319562673568726, 0.007167407777160406, 0.3981761634349823, 0.19387543201446533, 0.06758688390254974, 0.2027478814125061, 0.7914965748786926, 0.11173678934574127, 0.8862758874893188, 0.9958394765853882, 0.36705049872398376, 0.4083850085735321, 0.22375750541687012, 0.9538686871528625, 0.045213960111141205, 0.9942672848701477, 0.9846409559249878, 0.341144859790802, 0.16359734535217285, 0.49332842230796814, 0.19375020265579224, 0.803704559803009, 0.9864354133605957, 0.9936403036117554, 0.9937450885772705, 0.4581846296787262, 0.33521488308906555, 0.16011983156204224, 0.046365633606910706, 0.9966102838516235, 0.2855658233165741, 0.4944753348827362, 0.0800258219242096, 0.13899222016334534, 0.4778704047203064, 0.1461048722267151, 0.1872611790895462, 0.1888616979122162, 0.9869158864021301, 0.9911648631095886, 0.9952622056007385, 0.9937936663627625, 0.9970055222511292, 0.9894206523895264, 0.734994113445282, 0.2627604007720947, 0.9997121095657349, 0.9829144477844238, 0.9961730241775513, 0.9990900158882141, 0.9903271794319153, 0.7735026478767395, 0.14446741342544556, 0.08126292377710342, 0.9907926321029663, 0.9791728258132935, 0.11481528729200363, 0.5659908652305603, 0.3185719847679138, 0.1669544130563736, 0.8293864130973816, 0.7470164895057678, 0.2527318000793457, 0.9988349676132202, 0.29430803656578064, 0.7057386040687561, 0.49835386872291565, 0.23684144020080566, 0.15481041371822357, 0.006167745683342218, 0.10423490405082703, 0.26776230335235596, 0.7321583032608032, 0.9978744983673096, 0.9930856823921204, 0.6905462741851807, 0.10700158029794693, 0.20297206938266754, 0.9979206919670105, 0.9960205554962158, 0.6467603445053101, 0.26214954257011414, 0.09100333601236343, 0.993546187877655, 0.9978265166282654, 0.9981042146682739, 0.5431656241416931, 0.19055065512657166, 0.15859973430633545, 0.1074012815952301, 0.13301505148410797, 0.6370720863342285, 0.2146909534931183, 0.015168382786214352, 0.9963473081588745, 0.20437760651111603, 0.10031002759933472, 0.5023670196533203, 0.14294996857643127, 0.04999164491891861, 0.9921267628669739, 0.9956176280975342], "Term": ["abbot", "abbott", "action", "additional", "adorable", "adorable", "adorable", "adventure", "aina", "airbnb", "airbnb", "airbnb", "airy", "alix", "amazing", "amazing", "amazing", "amy", "angele", "angele", "answer", "answer", "apartment", "apartment", "appartment", "apt", "area", "area", "area", "area", "area", "area", "arrive", "arrive", "art", "assist", "austin", "authentic", "awesome", "awesome", "awesome", "bad", "bar", "bar", "bath", "bath", "bath", "bathroom", "bathroom", "bathroom", "beach", "beach", "beautiful", "beautiful", "beautiful", "bed", "bed", "bed", "bed", "behave", "bicycle", "big", "big", "big", "big", "bike", "binder", "bit", "block", "block", "block", "board", "boardwalk", "bonus", "bonus", "borrow", "brian", "bungalow", "bus", "cabana", "cabin", "cafe", "cafe", "cake", "canal", "car", "car", "car", "care", "care", "care", "carlo", "caroline", "caroline", "carthage", "castle", "cat", "ceiling", "central", "central", "chair", "challenge", "change", "check", "check", "checkin", "claudia", "clean", "clean", "clean", "clean", "clean", "close", "close", "close", "close", "closet", "coffee", "coffee", "coffee", "coffee", "coffee", "coffee", "colette", "come", "come", "come", "come", "come", "comfortable", "comfortable", "comfortable", "comfortable", "comfortable", "communicate", "communicate", "communication", "communication", "communicator", "compact", "con", "condo", "conrad", "conversation", "cottage", "cottage", "could", "could", "could", "could", "cozy", "cozy", "cozy", "cozy", "crash", "create", "cruise", "cruiser", "cute", "cute", "cute", "cute", "dan", "darrell", "dart", "dave", "david", "day", "day", "day", "day", "day", "decoration", "def", "describe", "describe", "describe", "describe", "direct", "distance", "distance", "district", "dog", "dog", "dog", "dog", "door", "downtown", "downtown", "dream", "drive", "drive", "drop", "dtla", "due", "dustin", "dustin", "ear", "early", "early", "early", "easy", "easy", "easy", "easy", "easy", "eatery", "ellen", "enchant", "energy", "enjoy", "enjoy", "enjoy", "enjoy", "enjoy", "entrance", "entrance", "entry", "everything", "everything", "everything", "everything", "everything", "exceed", "excellent", "excellent", "excellent", "excellent", "experience", "experience", "experience", "experience", "fairy", "fan", "fault", "feel", "feel", "feel", "feel", "feliz", "find", "find", "find", "find", "fine", "first", "first", "food", "food", "food", "freeway", "fridge", "fridge", "friendly", "friendly", "friendly", "friendly", "functional", "garage", "garagement", "garden", "garden", "generous", "generous", "george", "georgia", "get", "get", "get", "get", "get", "getaway", "getaway", "go", "go", "go", "go", "good", "good", "good", "good", "good", "good", "gorgeous", "gorgeous", "gratitude", "great", "great", "great", "great", "griffith", "grocery", "happen", "hear", "helpful", "helpful", "helpful", "helpful", "home", "home", "home", "homeless", "homey", "hospitality", "hospitality", "host", "host", "host", "host", "hot", "hot", "hour", "hour", "house", "house", "house", "house", "ice", "invite", "invite", "issue", "jana", "jeff", "jeff", "jeremiah", "job", "joe", "johnny", "julia", "julia", "julie", "keurig", "kevin", "key", "kinney", "kitchen", "kitchen", "kitchen", "land", "late", "leave", "leave", "leave", "let", "let", "let", "light", "light", "lisa", "little", "little", "little", "little", "location", "location", "location", "location", "los", "los", "loud", "lounge", "love", "love", "love", "love", "lovely", "lovely", "lovely", "lovely", "luggage", "lyft", "machine", "magical", "make", "make", "make", "make", "maker", "many", "many", "many", "many", "many", "many", "mark", "market", "marlene", "martha", "martha", "mary", "megan", "message", "metro", "microwave", "min", "min", "min", "mini", "minute", "minute", "minute", "moment", "monica", "museum", "nearby", "nearby", "nearby", "need", "need", "need", "need", "need", "neighborhood", "neighborhood", "netflix", "nice", "nice", "nice", "nice", "nice", "night", "night", "night", "night", "night", "nightlife", "nika", "noise", "noisy", "note", "open", "open", "opportunity", "organic", "organize", "outdoor", "outdoor", "outdoor", "outdoor", "oven", "parking", "parking", "parking", "parking", "patrick", "paula", "paulo", "peaceful", "peaceful", "pedro", "perfect", "perfect", "perfect", "perfect", "perfect", "perk", "peter", "peter", "pic", "pictured", "pier", "pina", "ping", "place", "place", "place", "place", "place", "pong", "pool", "poolhouse", "position", "pressure", "prime", "prior", "private", "problem", "problem", "problem", "promenade", "public", "quaint", "quality", "question", "question", "quick", "quick", "quick", "quick", "quiet", "quiet", "rebecca", "recommend", "recommend", "recommend", "recommend", "regret", "residential", "respond", "respond", "response", "responsive", "responsive", "restaurant", "restaurant", "restroom", "rid", "ride", "ride", "robe", "robot", "ronan", "room", "room", "room", "room", "room", "roomy", "safe", "safe", "safe", "safe", "safe", "santa", "sauna", "seclude", "send", "serve", "service", "shop", "shop", "shopping", "shopping", "short", "short", "short", "short", "short", "shower", "shower", "side", "side", "sleep", "sleep", "small", "small", "small", "solo", "sound", "space", "space", "space", "space", "space", "special", "station", "stay", "stay", "stay", "stay", "stay", "stop", "stop", "store", "store", "story", "street", "street", "street", "studio", "studio", "stuff", "supermarket", "sweet", "sweet", "sweet", "table", "table", "term", "terrific", "text", "thank", "thank", "thank", "thank", "thea", "thing", "thing", "thing", "thing", "time", "time", "time", "time", "todd", "toilet", "toiletry", "tomoko", "tony", "topanga", "towel", "towel", "tracy", "trendy", "trouble", "tub", "unbeatable", "unique", "unique", "unique", "universal", "urban", "use", "use", "use", "value", "value", "venice", "venice", "veronica", "vibe", "vibe", "visit", "visit", "visit", "visit", "visit", "walk", "walk", "walking", "wall", "warm", "warm", "warm", "water", "wave", "welcome", "welcome", "welcome", "wellington", "wifi", "window", "wonderful", "wonderful", "wonderful", "wonderful", "work", "work", "work", "work", "world", "would", "would", "would", "would", "would", "young", "yuki"]}, "R": 30, "lambda.step": 0.01, "plot.opts": {"xlab": "PC1", "ylab": "PC2"}, "topic.order": [4, 3, 2, 7, 5, 1, 6]};
+
+                function LDAvis_load_lib(url, callback){
+                  var s = document.createElement('script');
+                  s.src = url;
+                  s.async = true;
+                  s.onreadystatechange = s.onload = callback;
+                  s.onerror = function(){console.warn("failed to load library " + url);};
+                  document.getElementsByTagName("head")[0].appendChild(s);
+                }
+
+                if(typeof(LDAvis) !== "undefined"){
+                   // already loaded: just create the visualization
+                   !function(LDAvis){
+                       new LDAvis("#" + "ldavis_el17401123251904244665007767", ldavis_el17401123251904244665007767_data);
+                   }(LDAvis);
+                }else if(typeof define === "function" && define.amd){
+                   // require.js is available: use it to load d3/LDAvis
+                   require.config({paths: {d3: "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min"}});
+                   require(["d3"], function(d3){
+                      window.d3 = d3;
+                      LDAvis_load_lib("https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.js", function(){
+                        new LDAvis("#" + "ldavis_el17401123251904244665007767", ldavis_el17401123251904244665007767_data);
+                      });
+                    });
+                }else{
+                    // require.js not available: dynamically load d3 & LDAvis
+                    LDAvis_load_lib("https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js", function(){
+                         LDAvis_load_lib("https://cdn.rawgit.com/bmabey/pyLDAvis/files/ldavis.v1.0.0.js", function(){
+                                 new LDAvis("#" + "ldavis_el17401123251904244665007767", ldavis_el17401123251904244665007767_data);
+                            })
+                         });
+                }
+                </script>
+                -->
+            </div> 
+            
+        </div> 
+
+        <!--
+        <div class="diagrams" id="pieChart"></div>
+        <div class="diagrams" id="barChart"></div>  
+        <div class="diagrams" id="lineChart"></div>
+        -->
+        <!--
+        <script type="text/javascript">
+
+            /*
+             ################ FORMATS ##################
+             -------------------------------------------
+             */
+
+
+            var formatAsPercentage = d3.format("%"),
+                    formatAsPercentage1Dec = d3.format(".1%"),
+                    formatAsInteger = d3.format(","),
+                    fsec = d3.time.format("%S s"),
+                    fmin = d3.time.format("%M m"),
+                    fhou = d3.time.format("%H h"),
+                    fwee = d3.time.format("%a"),
+                    fdat = d3.time.format("%d d"),
+                    fmon = d3.time.format("%b")
+                    ;
+
+            /*
+             ############# PIE CHART ###################
+             -------------------------------------------
+             */
+
+
+
+            function dsPieChart() {
+
+                var dataset = [
+                    {category: "Sam", measure: 0.30},
+                    {category: "Peter", measure: 0.25},
+                    {category: "John", measure: 0.15},
+                    {category: "Rick", measure: 0.05},
+                    {category: "Lenny", measure: 0.18},
+                    {category: "Paul", measure: 0.04},
+                    {category: "Steve", measure: 0.03}
+                ]
+                        ;
+
+                var width = 400,
+                        height = 400,
+                        outerRadius = Math.min(width, height) / 2,
+                        innerRadius = outerRadius * .999,
+                        // for animation
+                        innerRadiusFinal = outerRadius * .5,
+                        innerRadiusFinal3 = outerRadius * .45,
+                        color = d3.scale.category20()    //builtin range of colors
+                        ;
+
+                var vis = d3.select("#pieChart")
+                        .append("svg:svg")              //create the SVG element inside the <body>
+                        .data([dataset])                   //associate our data with the document
+                        .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+                        .attr("height", height)
+                        .append("svg:g")                //make a group to hold our pie chart
+                        .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+                        ;
+
+                var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+                        .outerRadius(outerRadius).innerRadius(innerRadius);
+
+                // for animation
+                var arcFinal = d3.svg.arc().innerRadius(innerRadiusFinal).outerRadius(outerRadius);
+                var arcFinal3 = d3.svg.arc().innerRadius(innerRadiusFinal3).outerRadius(outerRadius);
+
+                var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+                        .value(function (d) {
+                            return d.measure;
+                        });    //we must tell it out to access the value of each element in our data array
+
+                var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+                        .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+                        .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+                        .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+                        .attr("class", "slice")    //allow us to style things in the slices (like text)
+                        .on("mouseover", mouseover)
+                        .on("mouseout", mouseout)
+                        .on("click", up)
+                        ;
+
+                arcs.append("svg:path")
+                        .attr("fill", function (d, i) {
+                            return color(i);
+                        }) //set the color for each slice to be chosen from the color function defined above
+                        .attr("d", arc)     //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+                        .append("svg:title") //mouseover title showing the figures
+                        .text(function (d) {
+                            return d.data.category + ": " + formatAsPercentage(d.data.measure);
+                        });
+
+                d3.selectAll("g.slice").selectAll("path").transition()
+                        .duration(750)
+                        .delay(10)
+                        .attr("d", arcFinal)
+                        ;
+
+                // Add a label to the larger arcs, translated to the arc centroid and rotated.
+                // source: http://bl.ocks.org/1305337#index.html
+                arcs.filter(function (d) {
+                    return d.endAngle - d.startAngle > .2;
+                })
+                        .append("svg:text")
+                        .attr("dy", ".35em")
+                        .attr("text-anchor", "middle")
+                        .attr("transform", function (d) {
+                            return "translate(" + arcFinal.centroid(d) + ")rotate(" + angle(d) + ")";
+                        })
+                        //.text(function(d) { return formatAsPercentage(d.value); })
+                        .text(function (d) {
+                            return d.data.category;
+                        })
+                        ;
+
+                // Computes the label angle of an arc, converting from radians to degrees.
+                function angle(d) {
+                    var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+                    return a > 90 ? a - 180 : a;
+                }
+
+
+                // Pie chart title			
+                vis.append("svg:text")
+                        .attr("dy", ".35em")
+                        .attr("text-anchor", "middle")
+                        .text("Revenue Share 2012")
+                        .attr("class", "title")
+                        ;
+
+
+
+                function mouseover() {
+                    d3.select(this).select("path").transition()
+                            .duration(750)
+                            //.attr("stroke","red")
+                            //.attr("stroke-width", 1.5)
+                            .attr("d", arcFinal3)
+                            ;
+                }
+
+                function mouseout() {
+                    d3.select(this).select("path").transition()
+                            .duration(750)
+                            //.attr("stroke","blue")
+                            //.attr("stroke-width", 1.5)
+                            .attr("d", arcFinal)
+                            ;
+                }
+
+                function up(d, i) {
+
+                    /* update bar chart when user selects piece of the pie chart */
+                    //updateBarChart(dataset[i].category);
+                    updateBarChart(d.data.category, color(i));
+                    updateLineChart(d.data.category, color(i));
+
+                }
+            }
+
+            dsPieChart();
+
+            /*
+             ############# BAR CHART ###################
+             -------------------------------------------
+             */
+
+
+
+            var datasetBarChart = [
+                {group: "All", category: "Oranges", measure: 63850.4963},
+                {group: "All", category: "Apples", measure: 78258.0845},
+                {group: "All", category: "Grapes", measure: 60610.2355},
+                {group: "All", category: "Figs", measure: 30493.1686},
+                {group: "All", category: "Mangos", measure: 56097.0151},
+                {group: "Sam", category: "Oranges", measure: 19441.5648},
+                {group: "Sam", category: "Apples", measure: 25922.0864},
+                {group: "Sam", category: "Grapes", measure: 9720.7824},
+                {group: "Sam", category: "Figs", measure: 6480.5216},
+                {group: "Sam", category: "Mangos", measure: 19441.5648},
+                {group: "Peter", category: "Oranges", measure: 22913.2728},
+                {group: "Peter", category: "Apples", measure: 7637.7576},
+                {group: "Peter", category: "Grapes", measure: 23549.7526},
+                {group: "Peter", category: "Figs", measure: 1909.4394},
+                {group: "Peter", category: "Mangos", measure: 7637.7576},
+                {group: "John", category: "Oranges", measure: 1041.5124},
+                {group: "John", category: "Apples", measure: 2430.1956},
+                {group: "John", category: "Grapes", measure: 15275.5152},
+                {group: "John", category: "Figs", measure: 4166.0496},
+                {group: "John", category: "Mangos", measure: 11803.8072},
+                {group: "Rick", category: "Oranges", measure: 7406.3104},
+                {group: "Rick", category: "Apples", measure: 2545.9192},
+                {group: "Rick", category: "Grapes", measure: 1620.1304},
+                {group: "Rick", category: "Figs", measure: 8563.5464},
+                {group: "Rick", category: "Mangos", measure: 3008.8136},
+                {group: "Lenny", category: "Oranges", measure: 7637.7576},
+                {group: "Lenny", category: "Apples", measure: 35411.4216},
+                {group: "Lenny", category: "Grapes", measure: 8332.0992},
+                {group: "Lenny", category: "Figs", measure: 6249.0744},
+                {group: "Lenny", category: "Mangos", measure: 11803.8072},
+                {group: "Paul", category: "Oranges", measure: 3182.399},
+                {group: "Paul", category: "Apples", measure: 867.927},
+                {group: "Paul", category: "Grapes", measure: 1808.18125},
+                {group: "Paul", category: "Figs", measure: 795.59975},
+                {group: "Paul", category: "Mangos", measure: 578.618},
+                {group: "Steve", category: "Oranges", measure: 2227.6793},
+                {group: "Steve", category: "Apples", measure: 3442.7771},
+                {group: "Steve", category: "Grapes", measure: 303.77445},
+                {group: "Steve", category: "Figs", measure: 2328.93745},
+                {group: "Steve", category: "Mangos", measure: 1822.6467},
+            ]
+                    ;
+
+    // set initial group value
+            var group = "All";
+
+            function datasetBarChosen(group) {
+                var ds = [];
+                for (x in datasetBarChart) {
+                    if (datasetBarChart[x].group == group) {
+                        ds.push(datasetBarChart[x]);
+                    }
+                }
+                return ds;
+            }
+
+
+            function dsBarChartBasics() {
+
+                var margin = {top: 30, right: 5, bottom: 20, left: 50},
+                        width = 500 - margin.left - margin.right,
+                        height = 250 - margin.top - margin.bottom,
+                        colorBar = d3.scale.category20(),
+                        barPadding = 1
+                        ;
+
+                return {
+                    margin: margin,
+                    width: width,
+                    height: height,
+                    colorBar: colorBar,
+                    barPadding: barPadding
+                }
+                ;
+            }
+
+            function dsBarChart() {
+
+                var firstDatasetBarChart = datasetBarChosen(group);
+
+                var basics = dsBarChartBasics();
+
+                var margin = basics.margin,
+                        width = basics.width,
+                        height = basics.height,
+                        colorBar = basics.colorBar,
+                        barPadding = basics.barPadding
+                        ;
+
+                var xScale = d3.scale.linear()
+                        .domain([0, firstDatasetBarChart.length])
+                        .range([0, width])
+                        ;
+
+                // Create linear y scale 
+                // Purpose: No matter what the data is, the bar should fit into the svg area; bars should not
+                // get higher than the svg height. Hence incoming data needs to be scaled to fit into the svg area.  
+                var yScale = d3.scale.linear()
+                        // use the max funtion to derive end point of the domain (max value of the dataset)
+                        // do not use the min value of the dataset as min of the domain as otherwise you will not see the first bar
+                        .domain([0, d3.max(firstDatasetBarChart, function (d) {
+                                return d.measure;
+                            })])
+                        // As coordinates are always defined from the top left corner, the y position of the bar
+                        // is the svg height minus the data value. So you basically draw the bar starting from the top. 
+                        // To have the y position calculated by the range function
+                        .range([height, 0])
+                        ;
+
+                //Create SVG element
+
+                var svg = d3.select("#barChart")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .attr("id", "barChartPlot")
+                        ;
+
+                var plot = svg
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        ;
+
+                plot.selectAll("rect")
+                        .data(firstDatasetBarChart)
+                        .enter()
+                        .append("rect")
+                        .attr("x", function (d, i) {
+                            return xScale(i);
+                        })
+                        .attr("width", width / firstDatasetBarChart.length - barPadding)
+                        .attr("y", function (d) {
+                            return yScale(d.measure);
+                        })
+                        .attr("height", function (d) {
+                            return height - yScale(d.measure);
+                        })
+                        .attr("fill", "lightgrey")
+                        ;
+
+
+                // Add y labels to plot	
+
+                plot.selectAll("text")
+                        .data(firstDatasetBarChart)
+                        .enter()
+                        .append("text")
+                        .text(function (d) {
+                            return formatAsInteger(d3.round(d.measure));
+                        })
+                        .attr("text-anchor", "middle")
+                        // Set x position to the left edge of each bar plus half the bar width
+                        .attr("x", function (d, i) {
+                            return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+                        })
+                        .attr("y", function (d) {
+                            return yScale(d.measure) + 14;
+                        })
+                        .attr("class", "yAxis")
+                        /* moved to CSS			   
+                         .attr("font-family", "sans-serif")
+                         .attr("font-size", "11px")
+                         .attr("fill", "white")
+                         */
+                        ;
+
+                // Add x labels to chart	
+
+                var xLabels = svg
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + (margin.top + height) + ")")
+                        ;
+
+                xLabels.selectAll("text.xAxis")
+                        .data(firstDatasetBarChart)
+                        .enter()
+                        .append("text")
+                        .text(function (d) {
+                            return d.category;
+                        })
+                        .attr("text-anchor", "middle")
+                        // Set x position to the left edge of each bar plus half the bar width
+                        .attr("x", function (d, i) {
+                            return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+                        })
+                        .attr("y", 15)
+                        .attr("class", "xAxis")
+                        //.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
+                        ;
+
+                // Title
+
+                svg.append("text")
+                        .attr("x", (width + margin.left + margin.right) / 2)
+                        .attr("y", 15)
+                        .attr("class", "title")
+                        .attr("text-anchor", "middle")
+                        .text("Overall Sales Breakdown 2012")
+                        ;
+            }
+
+            dsBarChart();
+
+            /* ** UPDATE CHART ** */
+
+            /* updates bar chart on request */
+
+            function updateBarChart(group, colorChosen) {
+
+                var currentDatasetBarChart = datasetBarChosen(group);
+
+                var basics = dsBarChartBasics();
+
+                var margin = basics.margin,
+                        width = basics.width,
+                        height = basics.height,
+                        colorBar = basics.colorBar,
+                        barPadding = basics.barPadding
+                        ;
+
+                var xScale = d3.scale.linear()
+                        .domain([0, currentDatasetBarChart.length])
+                        .range([0, width])
+                        ;
+
+
+                var yScale = d3.scale.linear()
+                        .domain([0, d3.max(currentDatasetBarChart, function (d) {
+                                return d.measure;
+                            })])
+                        .range([height, 0])
+                        ;
+
+                var svg = d3.select("#barChart svg");
+
+                var plot = d3.select("#barChartPlot")
+                        .datum(currentDatasetBarChart)
+                        ;
+
+                /* Note that here we only have to select the elements - no more appending! */
+                plot.selectAll("rect")
+                        .data(currentDatasetBarChart)
+                        .transition()
+                        .duration(750)
+                        .attr("x", function (d, i) {
+                            return xScale(i);
+                        })
+                        .attr("width", width / currentDatasetBarChart.length - barPadding)
+                        .attr("y", function (d) {
+                            return yScale(d.measure);
+                        })
+                        .attr("height", function (d) {
+                            return height - yScale(d.measure);
+                        })
+                        .attr("fill", colorChosen)
+                        ;
+
+                plot.selectAll("text.yAxis") // target the text element(s) which has a yAxis class defined
+                        .data(currentDatasetBarChart)
+                        .transition()
+                        .duration(750)
+                        .attr("text-anchor", "middle")
+                        .attr("x", function (d, i) {
+                            return (i * (width / currentDatasetBarChart.length)) + ((width / currentDatasetBarChart.length - barPadding) / 2);
+                        })
+                        .attr("y", function (d) {
+                            return yScale(d.measure) + 14;
+                        })
+                        .text(function (d) {
+                            return formatAsInteger(d3.round(d.measure));
+                        })
+                        .attr("class", "yAxis")
+                        ;
+
+
+                svg.selectAll("text.title") // target the text element(s) which has a title class defined
+                        .attr("x", (width + margin.left + margin.right) / 2)
+                        .attr("y", 15)
+                        .attr("class", "title")
+                        .attr("text-anchor", "middle")
+                        .text(group + "'s Sales Breakdown 2012")
+                        ;
+            }
+
+
+            /*
+             ############# LINE CHART ##################
+             -------------------------------------------
+             */
+
+            var datasetLineChart = [
+                {group: "All", category: 2008, measure: 289309},
+                {group: "All", category: 2009, measure: 234998},
+                {group: "All", category: 2010, measure: 310900},
+                {group: "All", category: 2011, measure: 223900},
+                {group: "All", category: 2012, measure: 234500},
+                {group: "Sam", category: 2008, measure: 81006.52},
+                {group: "Sam", category: 2009, measure: 70499.4},
+                {group: "Sam", category: 2010, measure: 96379},
+                {group: "Sam", category: 2011, measure: 64931},
+                {group: "Sam", category: 2012, measure: 70350},
+                {group: "Peter", category: 2008, measure: 63647.98},
+                {group: "Peter", category: 2009, measure: 61099.48},
+                {group: "Peter", category: 2010, measure: 87052},
+                {group: "Peter", category: 2011, measure: 58214},
+                {group: "Peter", category: 2012, measure: 58625},
+                {group: "Rick", category: 2008, measure: 23144.72},
+                {group: "Rick", category: 2009, measure: 14099.88},
+                {group: "Rick", category: 2010, measure: 15545},
+                {group: "Rick", category: 2011, measure: 11195},
+                {group: "Rick", category: 2012, measure: 11725},
+                {group: "John", category: 2008, measure: 34717.08},
+                {group: "John", category: 2009, measure: 30549.74},
+                {group: "John", category: 2010, measure: 34199},
+                {group: "John", category: 2011, measure: 33585},
+                {group: "John", category: 2012, measure: 35175},
+                {group: "Lenny", category: 2008, measure: 69434.16},
+                {group: "Lenny", category: 2009, measure: 46999.6},
+                {group: "Lenny", category: 2010, measure: 62180},
+                {group: "Lenny", category: 2011, measure: 40302},
+                {group: "Lenny", category: 2012, measure: 42210},
+                {group: "Paul", category: 2008, measure: 7232.725},
+                {group: "Paul", category: 2009, measure: 4699.96},
+                {group: "Paul", category: 2010, measure: 6218},
+                {group: "Paul", category: 2011, measure: 8956},
+                {group: "Paul", category: 2012, measure: 9380},
+                {group: "Steve", category: 2008, measure: 10125.815},
+                {group: "Steve", category: 2009, measure: 7049.94},
+                {group: "Steve", category: 2010, measure: 9327},
+                {group: "Steve", category: 2011, measure: 6717},
+                {group: "Steve", category: 2012, measure: 7035}
+            ]
+                    ;
+
+    // set initial category value
+            var group = "All";
+
+            function datasetLineChartChosen(group) {
+                var ds = [];
+                for (x in datasetLineChart) {
+                    if (datasetLineChart[x].group == group) {
+                        ds.push(datasetLineChart[x]);
+                    }
+                }
+                return ds;
+            }
+
+            function dsLineChartBasics() {
+
+                var margin = {top: 20, right: 10, bottom: 0, left: 50},
+                        width = 500 - margin.left - margin.right,
+                        height = 150 - margin.top - margin.bottom
+                        ;
+
+                return {
+                    margin: margin,
+                    width: width,
+                    height: height
+                }
+                ;
+            }
+
+
+            function dsLineChart() {
+
+                var firstDatasetLineChart = datasetLineChartChosen(group);
+
+                var basics = dsLineChartBasics();
+
+                var margin = basics.margin,
+                        width = basics.width,
+                        height = basics.height
+                        ;
+
+                var xScale = d3.scale.linear()
+                        .domain([0, firstDatasetLineChart.length - 1])
+                        .range([0, width])
+                        ;
+
+                var yScale = d3.scale.linear()
+                        .domain([0, d3.max(firstDatasetLineChart, function (d) {
+                                return d.measure;
+                            })])
+                        .range([height, 0])
+                        ;
+
+                var line = d3.svg.line()
+                        //.x(function(d) { return xScale(d.category); })
+                        .x(function (d, i) {
+                            return xScale(i);
+                        })
+                        .y(function (d) {
+                            return yScale(d.measure);
+                        })
+                        ;
+
+                var svg = d3.select("#lineChart").append("svg")
+                        .datum(firstDatasetLineChart)
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                // create group and move it so that margins are respected (space for axis and title)
+
+                var plot = svg
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        .attr("id", "lineChartPlot")
+                        ;
+
+                /* descriptive titles as part of plot -- start */
+                var dsLength = firstDatasetLineChart.length;
+
+                plot.append("text")
+                        .text(firstDatasetLineChart[dsLength - 1].measure)
+                        .attr("id", "lineChartTitle2")
+                        .attr("x", width / 2)
+                        .attr("y", height / 2)
+                        ;
+                /* descriptive titles -- end */
+
+                plot.append("path")
+                        .attr("class", "line")
+                        .attr("d", line)
+                        // add color
+                        .attr("stroke", "lightgrey")
+                        ;
+
+                plot.selectAll(".dot")
+                        .data(firstDatasetLineChart)
+                        .enter().append("circle")
+                        .attr("class", "dot")
+                        //.attr("stroke", function (d) { return d.measure==datasetMeasureMin ? "red" : (d.measure==datasetMeasureMax ? "green" : "steelblue") } )
+                        .attr("fill", function (d) {
+                            return d.measure == d3.min(firstDatasetLineChart, function (d) {
+                                return d.measure;
+                            }) ? "red" : (d.measure == d3.max(firstDatasetLineChart, function (d) {
+                                return d.measure;
+                            }) ? "green" : "white")
+                        })
+                        //.attr("stroke-width", function (d) { return d.measure==datasetMeasureMin || d.measure==datasetMeasureMax ? "3px" : "1.5px"} )
+                        .attr("cx", line.x())
+                        .attr("cy", line.y())
+                        .attr("r", 3.5)
+                        .attr("stroke", "lightgrey")
+                        .append("title")
+                        .text(function (d) {
+                            return d.category + ": " + formatAsInteger(d.measure);
+                        })
+                        ;
+
+                svg.append("text")
+                        .text("Performance 2012")
+                        .attr("id", "lineChartTitle1")
+                        .attr("x", margin.left + ((width + margin.right) / 2))
+                        .attr("y", 10)
+                        ;
+
+            }
+
+            dsLineChart();
+
+
+            /* ** UPDATE CHART ** */
+
+            /* updates bar chart on request */
+            function updateLineChart(group, colorChosen) {
+
+                var currentDatasetLineChart = datasetLineChartChosen(group);
+
+                var basics = dsLineChartBasics();
+
+                var margin = basics.margin,
+                        width = basics.width,
+                        height = basics.height
+                        ;
+
+                var xScale = d3.scale.linear()
+                        .domain([0, currentDatasetLineChart.length - 1])
+                        .range([0, width])
+                        ;
+
+                var yScale = d3.scale.linear()
+                        .domain([0, d3.max(currentDatasetLineChart, function (d) {
+                                return d.measure;
+                            })])
+                        .range([height, 0])
+                        ;
+
+                var line = d3.svg.line()
+                        .x(function (d, i) {
+                            return xScale(i);
+                        })
+                        .y(function (d) {
+                            return yScale(d.measure);
+                        })
+                        ;
+
+                var plot = d3.select("#lineChartPlot")
+                        .datum(currentDatasetLineChart)
+                        ;
+
+                /* descriptive titles as part of plot -- start */
+                var dsLength = currentDatasetLineChart.length;
+
+                plot.select("text")
+                        .text(currentDatasetLineChart[dsLength - 1].measure)
+                        ;
+                /* descriptive titles -- end */
+
+                plot
+                        .select("path")
+                        .transition()
+                        .duration(750)
+                        .attr("class", "line")
+                        .attr("d", line)
+                        // add color
+                        .attr("stroke", colorChosen)
+                        ;
+
+                var path = plot
+                        .selectAll(".dot")
+                        .data(currentDatasetLineChart)
+                        .transition()
+                        .duration(750)
+                        .attr("class", "dot")
+                        .attr("fill", function (d) {
+                            return d.measure == d3.min(currentDatasetLineChart, function (d) {
+                                return d.measure;
+                            }) ? "red" : (d.measure == d3.max(currentDatasetLineChart, function (d) {
+                                return d.measure;
+                            }) ? "green" : "white")
+                        })
+                        .attr("cx", line.x())
+                        .attr("cy", line.y())
+                        .attr("r", 3.5)
+                        // add color
+                        .attr("stroke", colorChosen)
+                        ;
+
+                path
+                        .selectAll("title")
+                        .text(function (d) {
+                            return d.category + ": " + formatAsInteger(d.measure);
+                        })
+                        ;
+
+            }
+
+        </script>
+        -->
+    </body>
+</html>

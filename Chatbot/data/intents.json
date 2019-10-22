@@ -1,0 +1,47 @@
+{"intents": [
+	{
+		"tag": "greeting",
+		"patterns": ["hi", "how are you", "is anyone there", "hello", "good day", "hey"],
+		"responses": ["Hello, my name is AirBot! It's a pleasure to talk to you. You can ask me whatever you want and when you're done, just say 'Bye'"]
+	},
+	{
+		"tag": "goodbye",
+		"patterns": ["bye", "see you later", "goodbye"],
+		"responses": ["See you later", "Enjoy your trip! Bye!", "It was a pleasure talking to you!", "Have a nice day", "Bye! Come back again soon"]
+	},
+	{
+		"tag": "thanks",
+		"patterns": ["thanks", "thank you", "that's helpful"],
+		"responses": ["Happy to help!", "Any time!", "My pleasure"]
+	}
+],
+"rules": [
+	{
+		"tag": "topNWithCondition",
+		"patterns": "what (is|are) the top (.*) hotel (.*)",
+		"responses": ["The Top {1} hotels {0} are: "]
+	},
+	{
+		"tag": "topN",
+		"patterns": "what (is|are) the top (.*) hotel",
+		"responses": ["The Top {0} hotels are: "]
+	},
+	{
+		"tag": "rating",
+		"patterns": "what (is|are) the rating of (.*)",
+		"responses": ["The rating of {0}: "]
+	},
+    {
+		"tag": "amenities",
+		"patterns": "doe (.*) have good (.*)",
+		"responses": ["The review for {1} in {0}: "]
+	},
+	{
+		"tag": "best",
+		"patterns": "which is the best hotel (.*)", 
+		"responses": ["The review for {0}: "]
+	}
+	
+	]
+	
+}
